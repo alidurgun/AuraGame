@@ -8,9 +8,18 @@
 #include <EnhancedInputComponent.h>
 #include <InputActionValue.h>
 
+#include "Interface/EnemyInterface.h"
+
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
+}
+
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -61,5 +70,50 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 		// with this usage we can able to control our character.
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	FHitResult CursorHit;
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
+
+	if (!CursorHit.bBlockingHit) return;
+
+	LastActor = CurrentActor;
+	CurrentActor = CursorHit.GetActor();
+
+	if (CurrentActor == nullptr)
+	{
+		if (LastActor == nullptr)
+		{
+			// do nothing.
+		}
+		else
+		{
+			// unhighlight prev actor.
+			LastActor->Unhighlight();
+		}
+	}
+	else
+	{
+		if (LastActor == nullptr)
+		{
+			// highlight current actor
+			CurrentActor->Highlight();
+		}
+		else
+		{
+			if (LastActor == CurrentActor)
+			{
+				// do nothing both are same actor already highlighted.
+			}
+			else
+			{
+				// unhighlight the last actor then highlight the current actor.
+				LastActor->Unhighlight();
+				CurrentActor->Highlight();
+			}
+		}
 	}
 }
