@@ -14,3 +14,8 @@ ABaseCharacter::ABaseCharacter()
 
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
+
+UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
