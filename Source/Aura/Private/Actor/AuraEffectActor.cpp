@@ -32,8 +32,7 @@ void AAuraEffectActor::AuraEffectBeginOverlap(UPrimitiveComponent* OverlappedCom
 		// we should have valid Ability System Component and valid Attribute Set at that moment.
 		if (UAbilitySystemComponent* ASC = ASCInterface->GetAbilitySystemComponent())
 		{
-			const UAuraAttributeSet* AuraAttributes = Cast<UAuraAttributeSet>(ASC->GetAttributeSet(UAuraAttributeSet::StaticClass()));
-			if (AuraAttributes)
+			if (const UAuraAttributeSet* AuraAttributes = Cast<UAuraAttributeSet>(ASC->GetAttributeSet(UAuraAttributeSet::StaticClass())))
 			{
 				// TODO: Remove this line whenever implement the GameplayEffects.
 				UAuraAttributeSet* MutableAuraAttributes = const_cast<UAuraAttributeSet*>(AuraAttributes);
