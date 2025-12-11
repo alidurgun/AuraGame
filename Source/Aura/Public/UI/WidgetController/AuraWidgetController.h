@@ -3,11 +3,36 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "UObject/NoExportTypes.h"
+#include "AttributeSet.h"
 #include "AuraWidgetController.generated.h"
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+
+// To initialize properties easy.
+USTRUCT(BlueprintType)
+struct FWidgetControllerParams
+{
+	GENERATED_BODY()
+
+	FWidgetControllerParams() {}
+
+	FWidgetControllerParams(UAbilitySystemComponent* ASC, UAttributeSet* AS, APlayerState* PS, APlayerController* PC)
+		: AbilitySystemComponent(ASC), AttributeSet(AS), PlayerState(PS), PlayerController(PC) {}
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{nullptr};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAttributeSet> AttributeSet{nullptr};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<APlayerState> PlayerState{nullptr};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<APlayerController> PlayerController{nullptr};
+};
+
 /**
  * This class will be our widget controller. Its main responsibility will be retrieve any relevant data from the
  * Model(System) (Health, Mana, Abilities etc.)
@@ -23,7 +48,12 @@ UCLASS()
 class AURA_API UAuraWidgetController : public UObject
 {
 	GENERATED_BODY()
+	
 public:
+	UFUNCTION(BlueprintCallable)
+	void SetWidgetControllerParams(const FWidgetControllerParams& WCParams);
+	
+protected:
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
