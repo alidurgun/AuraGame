@@ -10,3 +10,11 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	PlayerState = WCParams.PlayerState;
 	PlayerController = WCParams.PlayerController;
 }
+
+void UAuraWidgetController::BroadcastInitialValues()
+{
+}
+
+void UAuraWidgetController::BindCallbacksToDependencies()
+{
+}
