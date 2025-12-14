@@ -3,10 +3,9 @@
 
 #include "Actor/AuraEffectActor.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemInterface.h"
-#include "Components/SphereComponent.h"
-#include "GameplayAbilitySystem/AuraAttributeSet.h"
+#include "AssetTypeCategories.h"
 
 // Sets default values
 AAuraEffectActor::AAuraEffectActor()
@@ -14,47 +13,47 @@ AAuraEffectActor::AAuraEffectActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	SetRootComponent(Mesh);
-
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetupAttachment(GetRootComponent());
-
-}
-
-void AAuraEffectActor::AuraEffectBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// TODO: Implement GameplayEffects instead of using directly setter!
-	// if actor has ability system interface.
-	if (IAbilitySystemInterface* ASCInterface = Cast<IAbilitySystemInterface>(OtherActor))
-	{
-		// we should have valid Ability System Component and valid Attribute Set at that moment.
-		if (UAbilitySystemComponent* ASC = ASCInterface->GetAbilitySystemComponent())
-		{
-			if (const UAuraAttributeSet* AuraAttributes = Cast<UAuraAttributeSet>(ASC->GetAttributeSet(UAuraAttributeSet::StaticClass())))
-			{
-				// TODO: Remove this line whenever implement the GameplayEffects.
-				UAuraAttributeSet* MutableAuraAttributes = const_cast<UAuraAttributeSet*>(AuraAttributes);
-				// just for test purpose.
-				MutableAuraAttributes->SetHealth(MutableAuraAttributes->GetHealth() + 25.0f);
-				Destroy();
-			}
-		}
-	}
-}
-
-void AAuraEffectActor::AuraEffectEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	// For now we will leave it empty.
+	// removed sphere, mesh and overlap related functions to give designer freedom to modify them
+	// according to their needs.
+	SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("Root Component")));
 }
 
 // Called when the game starts or when spawned
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraEffectActor::AuraEffectBeginOverlap);
-	Sphere->OnComponentEndOverlap.AddDynamic(this, &AAuraEffectActor::AuraEffectEndOverlap);
+void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+{
+
+	checkf(GameplayEffectClass, TEXT("AuraEffectActor should have valid GameplayEffect class to apply effect."));
+	
+	// UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent is a function that do cast and other
+	// manuel operations that we are doing to create UAbilitySystemComponent. Can return nullptr!
+	if (UAbilitySystemComponent* TargetAsc = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
+	{
+		/** GameplayEffectContext is closely related to GameplayEffects. It will contain some informations
+		 * such as: Who is making this effect. What is the effect. What is the effect type etc.
+		 * FGameplayEffectContextHandle is a lightweight version for this context. Handle is wrapper.
+		 */
+		FGameplayEffectContextHandle GEContextHandle = TargetAsc->MakeEffectContext();
+		GEContextHandle.AddSourceObject(this);
+
+		/** TargetAsc->MakeOutgoingSpec => To create a FGameplayEffectSpecHandle object.
+		 * @param[0] => Specify the UGameplayEffect class to apply the effect.
+		 * @param[1] => Specify the level of this effect. Game can have multiple levels. (1.0f for now)
+		 * @param[2] => FGameplayEffectContextHandle.
+		 * This is wrapper for the FGameplayEffectSpec. In order to access FGameplayEffectSpec use Data member.
+		 */
+		FGameplayEffectSpecHandle GESpecHandle = TargetAsc->MakeOutgoingSpec(GameplayEffectClass, 1.0f,
+			GEContextHandle);
+
+		/** This function will aply the specified effect on the TargetAsc. According to the given
+		* GameplayEffectClass; actor's ability will be effected.
+		* @param[0] => Specify FGameplayEffectSpec. (This holds information for which attribute should be effected.)
+		* @param[1] => FPredictionKey, this is for compansete the lag issue for the Multiplayer game.
+		 */
+		TargetAsc->ApplyGameplayEffectSpecToSelf(*GESpecHandle.Data.Get());
+	}
 }
