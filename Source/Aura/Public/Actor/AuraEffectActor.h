@@ -28,4 +28,7 @@ protected:
 	// Gameplay Effect class to specify which effect should be applied.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="GAS|Gameplay Effects")
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="GAS|Gameplay Effects")
+	TSubclassOf<UGameplayEffect> HasDurationGameplayEffectClass;
 };
