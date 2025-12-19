@@ -12,6 +12,7 @@
 
 AAuraPlayerController::AAuraPlayerController()
 {
+	/* This will allow player to use inputs on multiplayer game. */
 	bReplicates = true;
 }
 
@@ -49,10 +50,12 @@ void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	// CastChecked will automatically check the if cast has succeed or not.
+	// CastChecked will automatically check the if cast has succeeded or not.
+	// In order to handle input data we need to cast InputComponent to UEnhancedInputComponent.
 	UEnhancedInputComponent* Enhanced = CastChecked<UEnhancedInputComponent>(InputComponent);
 	
 	// ETriggerEvent::Triggered => while it is pressed.
+	// MoveAction will receive data.(It will fill with given data.)
 	Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 }
 
@@ -68,7 +71,7 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	if ( APawn* ControlledPawn = GetPawn() )
 	{
 		// Then here we will add those directions into the AddMovementInput with corresponding axis,
-		// with this usage we can able to control our character.
+		// with this usage we can be able to control our character.
 		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);
 	}

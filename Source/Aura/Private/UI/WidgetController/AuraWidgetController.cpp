@@ -3,12 +3,12 @@
 
 #include "UI/WidgetController/AuraWidgetController.h"
 
-void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerParams& WCParams)
+void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerParams& WcParams)
 {
-	AbilitySystemComponent = WCParams.AbilitySystemComponent;
-	AttributeSet = WCParams.AttributeSet;
-	PlayerState = WCParams.PlayerState;
-	PlayerController = WCParams.PlayerController;
+	AbilitySystemComponent = WcParams.AbilitySystemComponent;
+	AttributeSet = WcParams.AttributeSet;
+	PlayerState = WcParams.PlayerState;
+	PlayerController = WcParams.PlayerController;
 }
 
 void UAuraWidgetController::BroadcastInitialValues()

@@ -3,7 +3,7 @@
 
 #include "Character/Enemy/EnemyCharacter.h"
 
-#include "NavigationSystemTypes.h"
+
 #include "Components/CapsuleComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
@@ -48,7 +48,7 @@ void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Hence Ability System Control has been bound to pawn directly, set it's owner and avatar in BeginPlay
+	// Hence Ability System Control has been bound to pawn directly, set its owner and avatar in BeginPlay
 	if (AbilitySystemComponent) // It should be already valid but just to be in the safe side.
 	{
 		// For the enemy pawn both owner and avatar should be same and equal to "this".

@@ -6,12 +6,12 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AuraOverlayWidgetController.h"
 
-UAuraOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
+UAuraOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WcParams)
 {
-	if (!OverlayWidgetController)
+	if (OverlayWidgetController == nullptr)
 	{
 		OverlayWidgetController = NewObject<UAuraOverlayWidgetController>(this, OverlayWidgetControllerClass);
-		OverlayWidgetController->SetWidgetControllerParams(WCParams);
+		OverlayWidgetController->SetWidgetControllerParams(WcParams);
 		OverlayWidgetController->BindCallbacksToDependencies();
 	}
 	return OverlayWidgetController;

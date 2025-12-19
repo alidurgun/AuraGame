@@ -20,6 +20,7 @@ struct FWidgetControllerParams
 	FWidgetControllerParams(UAbilitySystemComponent* ASC, UAttributeSet* AS, APlayerState* PS, APlayerController* PC)
 		: AbilitySystemComponent(ASC), AttributeSet(AS), PlayerState(PS), PlayerController(PC) {}
 
+	// Attributes should be initialized in the struct.
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{nullptr};
 
@@ -34,11 +35,11 @@ struct FWidgetControllerParams
 };
 
 /**
- * This class will be our widget controller. Its main responsibility will be retrieve any relevant data from the
+ * This class will be our widget controller. Its main responsibility will retrieve any relevant data from the
  * Model(System) (Health, Mana, Abilities etc.)
- * WidgetController will be depend on the model. It has no information about UserWidgets that bound
+ * WidgetController will be depended on the model. It has no information about UserWidgets that bound
  * to this controller.
- * For now we want to get data from 4 main classes.
+ * For now, we want to get data from 4 main classes.
  * 1-) Ability System Component
  * 2-) Attribute Set
  * 3-) Player State
@@ -51,7 +52,7 @@ class AURA_API UAuraWidgetController : public UObject
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetWidgetControllerParams(const FWidgetControllerParams& WCParams);
+	void SetWidgetControllerParams(const FWidgetControllerParams& WcParams);
 	
 	virtual void BroadcastInitialValues();
 	virtual void BindCallbacksToDependencies();

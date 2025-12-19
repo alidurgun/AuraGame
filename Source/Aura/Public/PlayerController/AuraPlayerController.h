@@ -34,7 +34,7 @@ private:
 	TObjectPtr<UInputMappingContext> InputContext;
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* MoveAction; // This input action will fill with the input data that we'll sent.
+	UInputAction* MoveAction; // This input action will fill with the input data that we'll send.
 
 	/*
 	 * This function will be binded to the MoveAction, and it'll be responsible from character movements.

@@ -5,7 +5,6 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "AssetTypeCategories.h"
 
 // Sets default values
 AAuraEffectActor::AAuraEffectActor()
@@ -53,7 +52,85 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		* GameplayEffectClass; actor's ability will be effected.
 		* @param[0] => Specify FGameplayEffectSpec. (This holds information for which attribute should be effected.)
 		* @param[1] => FPredictionKey, this is for compansete the lag issue for the Multiplayer game.
-		 */
-		TargetAsc->ApplyGameplayEffectSpecToSelf(*GESpecHandle.Data.Get());
+		*/
+		FActiveGameplayEffectHandle GameplayEffectHandle = TargetAsc->ApplyGameplayEffectSpecToSelf(*GESpecHandle.Data.Get());
+
+		/*
+		* FGameplayEffectSpecHandle has information about GameplayEffects. Also for the duration Policy.
+		* Data.Get()->Def.Get() is representation of the real GameplayEffect.
+		*/
+		if (GESpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite
+			&& InfiniteGameplayEffectRemoveType == EGameplayEffectRemoveType::RemoveOnEndOverlap)
+		{
+			// Current Gameplay effect is infinite with remove onendoverlap policy.
+			// Store it for remove it in the onendoverlap function.
+			ActiveGameplayEffects.Add(GameplayEffectHandle, TargetAsc);
+		}
 	}
+}
+
+void AAuraEffectActor::OnOverlap(AActor* TargetActor)
+{
+	/*
+	 * Multiple effects can be applied at the same time.
+	 */
+	if (InstantGameplayEffectApplyType == EGameplayEffectApplyType::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+	}
+	if (HasDurationGameplayEffectApplyType == EGameplayEffectApplyType::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, HasDurationGameplayEffectClass);
+	}
+	if (InfiniteGameplayEffectApplyType == EGameplayEffectApplyType::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+	}
+}
+
+void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
+{
+	/*
+	* Multiple effects can be applied at the same time.
+	*/
+	if (InstantGameplayEffectApplyType == EGameplayEffectApplyType::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+	}
+	if (HasDurationGameplayEffectApplyType == EGameplayEffectApplyType::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, HasDurationGameplayEffectClass);
+	}
+	if (InfiniteGameplayEffectApplyType == EGameplayEffectApplyType::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+	}
+
+	if (InfiniteGameplayEffectRemoveType == EGameplayEffectRemoveType::RemoveOnEndOverlap)
+	{
+		RemoveInfiniteGameplayEffects(TargetActor);
+	}
+}
+
+void AAuraEffectActor::RemoveInfiniteGameplayEffects(AActor* TargetActor)
+{
+	if (ActiveGameplayEffects.IsEmpty()) return;
+	if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
+	{
+		/* Handles will be removed after. */
+		TArray<FActiveGameplayEffectHandle> HandlesToRemove;
+		for (auto GameplayEffectHandle : ActiveGameplayEffects)
+		{
+			if (GameplayEffectHandle.Value == TargetASC)
+			{
+				HandlesToRemove.AddUnique(GameplayEffectHandle.Key);
+				TargetASC->RemoveActiveGameplayEffect(GameplayEffectHandle.Key, 1);
+			}
+		}
+		for (auto element : HandlesToRemove)
+		{
+			ActiveGameplayEffects.Remove(element);
+		}
+	}
+	
 }

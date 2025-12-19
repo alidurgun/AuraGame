@@ -29,7 +29,7 @@ public:
 	 * If this controller is valid then we will return this information.
 	 * Otherwise we will create this controller with parameters and return it.
 	 */
-	UAuraOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
+	UAuraOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WcParams);
 
 	/*
 	 * This function is responsible from initialize widget & widget controller,
