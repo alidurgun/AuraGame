@@ -45,7 +45,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		 * @param[2] => FGameplayEffectContextHandle.
 		 * This is wrapper for the FGameplayEffectSpec. In order to access FGameplayEffectSpec use Data member.
 		 */
-		FGameplayEffectSpecHandle GESpecHandle = TargetAsc->MakeOutgoingSpec(GameplayEffectClass, 1.0f,
+		FGameplayEffectSpecHandle GESpecHandle = TargetAsc->MakeOutgoingSpec(GameplayEffectClass, ActorLevel,
 			GEContextHandle);
 
 		/** This function will aply the specified effect on the TargetAsc. According to the given

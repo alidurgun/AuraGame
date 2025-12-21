@@ -72,6 +72,9 @@ protected:
 	EGameplayEffectRemoveType InfiniteGameplayEffectRemoveType{EGameplayEffectRemoveType::DoNotRemove};
 	// GameplayEffects
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="GAS|Gameplay Effects")
+	float ActorLevel{ 1.0f };
+
 private:
 	/* This map will fill with information of infinite GameplayEffect and targeted ASC. */
 	UPROPERTY()
