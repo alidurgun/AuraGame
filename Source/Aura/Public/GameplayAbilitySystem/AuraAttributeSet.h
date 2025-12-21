@@ -14,6 +14,39 @@
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+USTRUCT()
+struct FEffectProperties
+{
+	GENERATED_BODY()
+	FEffectProperties(){}
+
+	FGameplayEffectContextHandle GameplayEffectContextHandle;
+
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC{nullptr};
+	
+	UPROPERTY()
+	AActor* SourceAvatarActor{nullptr};
+	
+	UPROPERTY()
+	AController* SourceController{nullptr};
+	
+	UPROPERTY()
+	ACharacter* SourceCharacter{nullptr};
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC{nullptr};
+	
+	UPROPERTY()
+	AActor* TargetAvatarActor{nullptr};
+	
+	UPROPERTY()
+	AController* TargetController{nullptr};
+	
+	UPROPERTY()
+	ACharacter* TargetCharacter{nullptr};
+};
+
 /**
  * 
  */
@@ -61,4 +94,26 @@ public:
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 	// Attribute Callback Functions
+
+	/* This function will be called everytime before any attribute has changed.
+	 * @param[0] Attribute => Actual attribute that will be changed.
+	 * @param[1] NewValue => New value for this attribute.
+	 * Use this function to clamp values for the relevant attribute. No game logic should be
+	 * implemented in this function.
+	 * -> Later operations recalculate the current value from all modifiers. (Which means reclamp could
+	 * be needed.)
+	 * -> Does not change the modifier, just the value from querying the modifier.
+	 * -> Not best function to clamp values.
+	 */
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	/* This function is better version for change and get control over the effected attribute.
+	 * This function will kicked of after a Gameplay Effect changes an attribute.
+	 * Data has a lot of information regarding with the change for example:
+	 * causer of this effect. Target of this effect. Effect properties etc.
+	 */
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
+private:
+	void SetEffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props);
 };
