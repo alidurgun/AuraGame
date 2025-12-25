@@ -4,9 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "UI/WidgetController/AuraWidgetController.h"
+#include "GameplayTagContainer.h"
 #include "AuraOverlayWidgetController.generated.h"
 
+class UAuraUserWidget;
 struct FOnAttributeChangeData;
+
+/*
+ * Inherited from FTableRowBase => In order to create DataTable from this struct.(Display name = UIWidgetRow)
+ * This struct will be used to show some specific message according to tag retrieved.
+ * MessageTag => Real tag that retrieved from gameplay effect applied.
+ * Message => Will be used to display text to the user in the form of widget.
+ * MessageWidget => Widget that the message will be displayed.
+ * Image => Image that will be used for relevant tag.
+ */
+USTRUCT(BlueprintType)
+struct FUIWidgetRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag MessageTag = FGameplayTag();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText Message = FText();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UAuraUserWidget> MessageWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* Image = nullptr;
+};
+
 /*
  * FOnHealthChangedSignature => Delegate Name. F at beginning and Signature and ending is a common
  * signatures for creating delegate functions. Their corresponding callback functions will have name
@@ -18,6 +47,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, Ne
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSignature, float, NewMaxHealth);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnManaChangedSignature, float, NewMana);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxManaChangedSignature, float, NewMaxMana);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowSignature, FUIWidgetRow, MessageWidget);
 
 /**
  * This widget controller will be used by overlay widget.
@@ -46,6 +76,15 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FOnMaxManaChangedSignature OnMaxManaChanged;
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
+	FOnMessageWidgetRowSignature OnMessageWidgetRow;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
+	TObjectPtr<UDataTable> MessageWidgetDataTable;
+
+	/* We want to use this function to return any type of Row data. */
+	template<typename T>
+	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
 protected:
 	/*
 	 * This callback function will be called whenever the Health attribute has changed in Aura AttributeSet.
@@ -71,3 +110,9 @@ protected:
 	*/
 	void MaxManaChanged(const FOnAttributeChangeData& MaxMana) const;
 };
+
+template <typename T>
+T* UAuraOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag)
+{
+	return DataTable->FindRow<T>(Tag.GetTagName(), TEXT(""));
+}

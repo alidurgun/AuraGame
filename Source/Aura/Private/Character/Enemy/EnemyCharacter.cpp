@@ -49,9 +49,14 @@ void AEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	// Hence Ability System Control has been bound to pawn directly, set its owner and avatar in BeginPlay
-	if (AbilitySystemComponent) // It should be already valid but just to be in the safe side.
-	{
-		// For the enemy pawn both owner and avatar should be same and equal to "this".
-		AbilitySystemComponent->InitAbilityActorInfo(this,this);
-	}
+	InitAbilityComponent();
+}
+
+void AEnemyCharacter::InitAbilityComponent()
+{
+	check(AbilitySystemComponent) // It should be already valid.
+	
+	// For the enemy pawn both owner and avatar should be same and equal to "this".
+	AbilitySystemComponent->InitAbilityActorInfo(this,this);
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 }

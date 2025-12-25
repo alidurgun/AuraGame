@@ -110,8 +110,7 @@ public:
 	/* This function is better version for change and get control over the effected attribute.
 	 * This function will kicked of after a Gameplay Effect changes an attribute.
 	 * Data has a lot of information regarding with the change for example:
-	 * causer of this effect. Target of this effect. Effect properties etc.
-	 */
+	 * causer of this effect. Target of this effect. Effect properties etc. */
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
 private:

@@ -3,6 +3,7 @@
 
 #include "UI/WidgetController/AuraOverlayWidgetController.h"
 
+#include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
 
 void UAuraOverlayWidgetController::BroadcastInitialValues()
@@ -44,6 +45,26 @@ void UAuraOverlayWidgetController::BindCallbacksToDependencies()
 	// Whenever MaxMana attribute has changed it will call this callback function automatically.
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
 		AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UAuraOverlayWidgetController::MaxManaChanged);
+
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->OnEffectTagApplied.AddLambda(
+		[this](const FGameplayTagContainer& TagContainer)
+		{
+			for (const auto& Tag : TagContainer)
+			{
+				FGameplayTag RequiredTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				/* "Message.Health".MatchesTag("Message") will return True,
+				 * "Message".MatchesTag("Message.Health") will return False */
+				if (Tag.MatchesTag(RequiredTag))
+				{
+					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+					if (Row != nullptr)
+					{
+						OnMessageWidgetRow.Broadcast(*Row);
+					}
+				}
+			}
+		}
+		);
 }
 
 void UAuraOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Health) const

@@ -32,4 +32,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	/* Function to initialize ability system component for the characters in the game. */
+	virtual void InitAbilityComponent();
 };

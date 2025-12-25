@@ -23,6 +23,6 @@ public:
 	/* It will be called when the player state has been bound with the character*/
 	virtual void OnRep_PlayerState() override;
 
-private:
-	void InitAbilityComponent();
+protected:
+	virtual void InitAbilityComponent() override;
 };
