@@ -32,19 +32,35 @@ void UAuraOverlayWidgetController::BindCallbacksToDependencies()
 
 	// Whenever Health attribute has changed it will call this callback function automatically.
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		AuraAttributeSet->GetHealthAttribute()).AddUObject(this, &UAuraOverlayWidgetController::HealthChanged);
+		AuraAttributeSet->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Health)
+			{
+				OnHealthChanged.Broadcast(Health.NewValue);
+			});
 
 	// Whenever MaxHealth attribute has changed it will call this callback function automatically.
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		AuraAttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UAuraOverlayWidgetController::MaxHealthChanged);
+		AuraAttributeSet->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& MaxHealth)
+			{
+				OnMaxHealthChanged.Broadcast(MaxHealth.NewValue);
+			});
 
 	// Whenever Mana attribute has changed it will call this callback function automatically.
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		AuraAttributeSet->GetManaAttribute()).AddUObject(this, &UAuraOverlayWidgetController::ManaChanged);
+		AuraAttributeSet->GetManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Mana)
+			{
+				OnManaChanged.Broadcast(Mana.NewValue);
+			});
 
 	// Whenever MaxMana attribute has changed it will call this callback function automatically.
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(
-		AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UAuraOverlayWidgetController::MaxManaChanged);
+		AuraAttributeSet->GetMaxManaAttribute()).AddLambda(
+			[this] (const FOnAttributeChangeData& MaxMana)
+			{
+				OnMaxManaChanged.Broadcast(MaxMana.NewValue);
+			});
 
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->OnEffectTagApplied.AddLambda(
 		[this](const FGameplayTagContainer& TagContainer)
@@ -63,30 +79,5 @@ void UAuraOverlayWidgetController::BindCallbacksToDependencies()
 					}
 				}
 			}
-		}
-		);
-}
-
-void UAuraOverlayWidgetController::HealthChanged(const FOnAttributeChangeData& Health) const
-{
-	// Use Broadcast to send data to the widget.
-	OnHealthChanged.Broadcast(Health.NewValue);
-}
-
-void UAuraOverlayWidgetController::MaxHealthChanged(const FOnAttributeChangeData& MaxHealth) const
-{
-	// Use Broadcast to send data to the widget.
-	OnMaxHealthChanged.Broadcast(MaxHealth.NewValue);
-}
-
-void UAuraOverlayWidgetController::ManaChanged(const FOnAttributeChangeData& Mana) const
-{
-	// Use Broadcast to send data to the widget.
-	OnManaChanged.Broadcast(Mana.NewValue);
-}
-
-void UAuraOverlayWidgetController::MaxManaChanged(const FOnAttributeChangeData& MaxMana) const
-{
-	// Use Broadcast to send data to the widget.
-	OnMaxManaChanged.Broadcast(MaxMana.NewValue);
+		});
 }

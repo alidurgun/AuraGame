@@ -42,11 +42,11 @@ struct FUIWidgetRow : public FTableRowBase
  * without F and Signature.
  * float => Parameter type.
  * NewHealth => Parameter Name.
- */ 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, NewHealth);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSignature, float, NewMaxHealth);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnManaChangedSignature, float, NewMana);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxManaChangedSignature, float, NewMaxMana);
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);
+/* Hence our MaxHealth, Health, Mana and MaxMana using same signature with one param float. We can
+ * Combine them into one single delegate instead of creating 4 different delegate.
+ */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMessageWidgetRowSignature, FUIWidgetRow, MessageWidget);
 
 /**
@@ -65,16 +65,16 @@ public:
 	virtual void BindCallbacksToDependencies() override;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnHealthChangedSignature OnHealthChanged;
+	FOnAttributeChangedSignature OnHealthChanged;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnMaxHealthChangedSignature OnMaxHealthChanged;
+	FOnAttributeChangedSignature OnMaxHealthChanged;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnManaChangedSignature OnManaChanged;
+	FOnAttributeChangedSignature OnManaChanged;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
-	FOnMaxManaChangedSignature OnMaxManaChanged;
+	FOnAttributeChangedSignature OnMaxManaChanged;
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")
 	FOnMessageWidgetRowSignature OnMessageWidgetRow;
@@ -85,30 +85,6 @@ public:
 	/* We want to use this function to return any type of Row data. */
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
-protected:
-	/*
-	 * This callback function will be called whenever the Health attribute has changed in Aura AttributeSet.
-	 * This function has signature for GetGameplayAttributeValueChangeDelegate delegate.
-	*/
-	void HealthChanged(const FOnAttributeChangeData& Health) const;
-	
-	/*
-	 * This callback function will be called whenever the MaxHealth attribute has changed in Aura AttributeSet.
-	 * This function has signature for GetGameplayAttributeValueChangeDelegate delegate.
-	*/
-	void MaxHealthChanged(const FOnAttributeChangeData& MaxHealth) const;
-
-	/*
-	 * This callback function will be called whenever the Mana attribute has changed in Aura AttributeSet.
-	 * This function has signature for GetGameplayAttributeValueChangeDelegate delegate.
-	*/
-	void ManaChanged(const FOnAttributeChangeData& Mana) const;
-
-	/*
-	 * This callback function will be called whenever the MaxMana attribute has changed in Aura AttributeSet.
-	 * This function has signature for GetGameplayAttributeValueChangeDelegate delegate.
-	*/
-	void MaxManaChanged(const FOnAttributeChangeData& MaxMana) const;
 };
 
 template <typename T>
