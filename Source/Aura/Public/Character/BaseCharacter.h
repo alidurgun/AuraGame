@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "BaseCharacter.generated.h"
 
+class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
 
@@ -33,6 +34,11 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DefaultPrimaryValues;
+
 	/* Function to initialize ability system component for the characters in the game. */
 	virtual void InitAbilityComponent();
+
+	void InitializePrimaryValues() const;
 };
