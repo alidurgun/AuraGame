@@ -44,7 +44,7 @@ void AAuraCharacter::InitAbilityComponent()
 			}
 		}
 
-		InitializePrimaryValues();
+		InitializeDefaultValues();
 	}
 }
 

@@ -26,11 +26,18 @@ void ABaseCharacter::InitAbilityComponent()
 {
 }
 
-void ABaseCharacter::InitializePrimaryValues() const
+void ABaseCharacter::InitializeDefaultValues() const
 {
-	check(DefaultPrimaryValues);
-	check(AbilitySystemComponent);
+	ApplyEffectToSelf(DefaultPrimaryValues,1.0f);
+	ApplyEffectToSelf(DefaultSecondaryValues, 1.0f);
+}
+
+void ABaseCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffect, float Level) const
+{
+	check(GameplayEffect);
+	check(IsValid(AbilitySystemComponent));
 	const FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
-	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultPrimaryValues,1.0f,EffectContextHandle);
+	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, Level,EffectContextHandle);
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), AbilitySystemComponent);
+
 }

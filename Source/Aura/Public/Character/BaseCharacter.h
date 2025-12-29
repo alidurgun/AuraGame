@@ -34,11 +34,18 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DefaultPrimaryValues;
-
 	/* Function to initialize ability system component for the characters in the game. */
 	virtual void InitAbilityComponent();
 
-	void InitializePrimaryValues() const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DefaultPrimaryValues;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DefaultSecondaryValues;
+
+	void InitializeDefaultValues() const;
+
+private:
+	/* Apply given Gameplay Effect class to the self for given level. */
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffect, float Level) const;
 };
