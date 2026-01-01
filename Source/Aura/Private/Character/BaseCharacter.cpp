@@ -28,8 +28,9 @@ void ABaseCharacter::InitAbilityComponent()
 
 void ABaseCharacter::InitializeDefaultValues() const
 {
-	ApplyEffectToSelf(DefaultPrimaryValues,1.0f);
-	ApplyEffectToSelf(DefaultSecondaryValues, 1.0f);
+	ApplyEffectToSelf(PrimaryDefaultAttributes,1.0f);
+	ApplyEffectToSelf(SecondaryDefaultAttributes, 1.0f);
+	ApplyEffectToSelf(VitalDefaultAttributes,1.0f);
 }
 
 void ABaseCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffect, float Level) const

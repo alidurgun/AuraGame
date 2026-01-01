@@ -39,10 +39,13 @@ protected:
 	virtual void InitAbilityComponent();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DefaultPrimaryValues;
+	TSubclassOf<UGameplayEffect> PrimaryDefaultAttributes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DefaultSecondaryValues;
+	TSubclassOf<UGameplayEffect> SecondaryDefaultAttributes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> VitalDefaultAttributes;
 
 	void InitializeDefaultValues() const;
 
