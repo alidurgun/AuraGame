@@ -24,8 +24,15 @@ public:
 	virtual void Unhighlight() override;
 	/* End Enemy Interface */
 
+	/* Combat Interface */
+	FORCEINLINE virtual int32 GetPlayerLevel() const override { return PlayerLevel; } 
+	/* End Combat Interface */
+
 protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityComponent() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	int32 PlayerLevel;
 };

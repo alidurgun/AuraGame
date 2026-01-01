@@ -23,6 +23,10 @@ public:
 	/* It will be called when the player state has been bound with the character*/
 	virtual void OnRep_PlayerState() override;
 
+	/* Combat Interface */
+	virtual int32 GetPlayerLevel() const override;
+	/* End Combat Interface */
+
 protected:
 	virtual void InitAbilityComponent() override;
 };

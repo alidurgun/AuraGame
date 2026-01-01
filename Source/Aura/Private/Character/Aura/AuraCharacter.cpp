@@ -63,3 +63,10 @@ void AAuraCharacter::OnRep_PlayerState()
 	// Actor info for the client side.
 	InitAbilityComponent();
 }
+
+int32 AAuraCharacter::GetPlayerLevel() const
+{
+	AAuraPlayerState* CurrentPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(CurrentPlayerState);
+	return CurrentPlayerState->GetPlayerLevel();
+}
