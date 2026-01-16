@@ -21,9 +21,6 @@ public:
 	/* To initialize all Ability system component related gameplay tags in the game. */
 	static void InitializeNativeGameplayTags();
 
-private:
-	static FAuraGameplayTags instance;
-
 	/* Primary Attributes */
 	FGameplayTag Attributes_Primary_Strength;
 	FGameplayTag Attributes_Primary_Intelligence;
@@ -43,4 +40,7 @@ private:
 	FGameplayTag Attributes_Secondary_MaxHealth;
 	FGameplayTag Attributes_Secondary_MaxMana;
 	/* End Secondary Attributes */
+
+private:
+	static FAuraGameplayTags instance;
 };
