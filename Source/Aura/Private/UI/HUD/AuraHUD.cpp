@@ -4,6 +4,7 @@
 #include "UI/HUD/AuraHUD.h"
 
 #include "UI/Widget/AuraUserWidget.h"
+#include "UI/WidgetController/AuraAttributeMenuWC.h"
 #include "UI/WidgetController/AuraOverlayWidgetController.h"
 
 UAuraOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WcParams)
@@ -17,11 +18,22 @@ UAuraOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidget
 	return OverlayWidgetController;
 }
 
+UAuraAttributeMenuWC* AAuraHUD::GetAttributeMenuWidgetController(const FWidgetControllerParams& WcParams)
+{
+	if (AttributeMenuWidgetController == nullptr)
+	{
+		AttributeMenuWidgetController = NewObject<UAuraAttributeMenuWC>(this, AttributeMenuWidgetControllerClass);
+		AttributeMenuWidgetController->SetWidgetControllerParams(WcParams);
+		AttributeMenuWidgetController->BindCallbacksToDependencies();
+	}
+	return AttributeMenuWidgetController;
+}
+
 void AAuraHUD::InitOverlay(UAbilitySystemComponent* ASC, UAttributeSet* AS, APlayerState* PS, APlayerController* PC)
 {
 	checkf(OverlayWidgetClass, TEXT("No Overlay Widget Class has found. Set it in the BP!"));
 	checkf(OverlayWidgetControllerClass, TEXT("No Overlay Widget Controller Class has found. Set it in the BP!"));
-
+	/* Overlay widget initialization */
 	if (UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass))
 	{
 		OverlayWidget = Cast<UAuraUserWidget>(Widget);
@@ -37,6 +49,7 @@ void AAuraHUD::InitOverlay(UAbilitySystemComponent* ASC, UAttributeSet* AS, APla
 	}
 
 	OverlayWidget->AddToViewport();
+	/* End Overlay widget initialization */
 }
 
 

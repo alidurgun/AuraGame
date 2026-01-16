@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemBPLibrary.generated.h"
 
+class UAuraAttributeMenuWC;
 class UAuraOverlayWidgetController;
 /**
  * To make some functions usable on the BP side without binding them to a specific gameplay object type we
@@ -25,4 +26,7 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemBPLibrary|WidgetController")
 	static UAuraOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContext);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemBPLibrary|WidgetController")
+	static UAuraAttributeMenuWC* GetAttributeMenuWidgetController(const UObject* WorldContext);
 };

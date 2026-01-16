@@ -9,7 +9,7 @@
 /**
  * This class will be used by attribute menu widgets.
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class AURA_API UAuraAttributeMenuWC : public UAuraWidgetController
 {
 	GENERATED_BODY()

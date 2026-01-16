@@ -3,6 +3,7 @@
 
 #include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 
+#include "GameplayAbilitySystem/AuraAttributeSet.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerState/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -23,6 +24,22 @@ UAuraOverlayWidgetController* UAuraAbilitySystemBPLibrary::GetOverlayWidgetContr
 			/* end Required parameters to create overlay widget controller. */
 			FWidgetControllerParams WCParams(ASC,AS,PS,PC);
 			return AuraHUD->GetOverlayWidgetController(WCParams);
+		}
+	}
+	return nullptr;
+}
+
+UAuraAttributeMenuWC* UAuraAbilitySystemBPLibrary::GetAttributeMenuWidgetController(const UObject* WorldContext)
+{
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContext,0))
+	{
+		if (AAuraHUD* AuraHUD = PC->GetHUD<AAuraHUD>())
+		{
+			AAuraPlayerState* PS = PC->GetPlayerState<AAuraPlayerState>();
+			UAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+			UAttributeSet* AS = PS->GetAttributeSet();
+			FWidgetControllerParams WCParams(ASC,AS,PS,PC);
+			return AuraHUD->GetAttributeMenuWidgetController(WCParams);
 		}
 	}
 	return nullptr;

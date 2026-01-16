@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "AuraHUD.generated.h"
 
+class UAuraAttributeMenuWC;
 class UAttributeSet;
 class UAbilitySystemComponent;
 class UAuraOverlayWidgetController;
@@ -21,15 +22,19 @@ class AURA_API AAuraHUD : public AHUD
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;
-
 	/*
 	 * This function will act like a singleton class for the Overlay Widget Controller.
 	 * If this controller is valid then we will return this information.
-	 * Otherwise we will create this controller with parameters and return it.
+	 * Otherwise, we will create this controller with parameters and return it.
 	 */
 	UAuraOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WcParams);
+
+	/*
+	 * This function will act like a singleton class for the Attribute Menu Widget Controller.
+	 * If this controller is valid then we will return this information.
+	 * Otherwise, we will create this controller with parameters and return it.
+	 */
+	UAuraAttributeMenuWC* GetAttributeMenuWidgetController(const FWidgetControllerParams& WcParams);
 
 	/*
 	 * This function is responsible from initialize widget & widget controller,
@@ -38,7 +43,10 @@ public:
 	void InitOverlay(UAbilitySystemComponent* ASC, UAttributeSet* AS, APlayerState* PS, APlayerController* PC);
 
 private:
-	// Class information will be needed also.
+	/* Overlay widget related properties */
+	UPROPERTY()
+	TObjectPtr<UAuraUserWidget> OverlayWidget;
+	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
 
@@ -47,4 +55,13 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAuraOverlayWidgetController> OverlayWidgetControllerClass;
+	/* End overlay widget related properties */
+	
+	/* Attribute menu related properties */
+	UPROPERTY()
+	TObjectPtr<UAuraAttributeMenuWC> AttributeMenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UAuraAttributeMenuWC> AttributeMenuWidgetControllerClass;
+	/* End Attribute menu widget controller */
 };
