@@ -8,6 +8,7 @@
 #include "Interface/CombatInterface.h"
 #include "BaseCharacter.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
 class UAttributeSet;
@@ -49,7 +50,12 @@ protected:
 
 	void InitializeDefaultValues() const;
 
+	void AddCharacterAbilities() const;
+
 private:
 	/* Apply given Gameplay Effect class to the self for given level. */
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffect, float Level) const;
+
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

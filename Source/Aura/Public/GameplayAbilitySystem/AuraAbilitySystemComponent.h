@@ -30,4 +30,6 @@ public:
 	FOnEffectTagAppliedSignature OnEffectTagApplied;
 
 	void GameplayEffectApplied(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle) const;
+
+	void AddCharacterAbilites(const TArray<TSubclassOf<UGameplayAbility>>& abilities);
 };

@@ -4,6 +4,7 @@
 #include "Character/BaseCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -31,6 +32,17 @@ void ABaseCharacter::InitializeDefaultValues() const
 	ApplyEffectToSelf(PrimaryDefaultAttributes,1.0f);
 	ApplyEffectToSelf(SecondaryDefaultAttributes, 1.0f);
 	ApplyEffectToSelf(VitalDefaultAttributes,1.0f);
+}
+
+void ABaseCharacter::AddCharacterAbilities() const
+{
+	// Only server can grant ability. So if this is not server side then return immediately.
+	if (!HasAuthority()) return;
+
+	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	// Ability System Component should be responsible from giving abilities.
+
+	AuraASC->AddCharacterAbilites(StartupAbilities);
 }
 
 void ABaseCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffect, float Level) const

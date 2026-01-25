@@ -16,3 +16,18 @@ void UAuraAbilitySystemComponent::GameplayEffectApplied(UAbilitySystemComponent*
 	
 	OnEffectTagApplied.Broadcast(TagContainer);
 }
+
+void UAuraAbilitySystemComponent::AddCharacterAbilites(const TArray<TSubclassOf<UGameplayAbility>>& abilities)
+{
+	for (auto ability : abilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(ability,1);
+		/* Two-way to grant ability. */
+		// GiveAbility can accept const parameter. Just giving the ability. Activation later.
+		// GiveAbility(AbilitySpec);
+
+		// GiveAbilityAndActivateOnce can only accept non const parameter. It'll activate the ability
+		// once it gave.
+		GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+}

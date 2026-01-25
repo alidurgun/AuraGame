@@ -54,6 +54,9 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	
 	// Actor info for the server side.
 	InitAbilityComponent();
+
+	// To give abilities from server side. We have to call it from PossessedBy Function.
+	AddCharacterAbilities();
 }
 
 void AAuraCharacter::OnRep_PlayerState()
