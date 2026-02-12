@@ -6,6 +6,8 @@
 #include "Abilities/GameplayAbility.h"
 #include "AuraGameplayAbility.generated.h"
 
+struct FGameplayTag;
+
 /**
  * Gameplay Abilities are actions or skills that an actor can perform in the game.
  * It defines what an ability does and the conditions under which it can be used.
@@ -34,5 +36,9 @@ UCLASS()
 class AURA_API UAuraGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
+
+public:
+	// Default tag for the starting ability. Startup ability will be associated with this tag.
+	UPROPERTY(EditAnywhere)
+	FGameplayTag StartupAbilityTag;
 };

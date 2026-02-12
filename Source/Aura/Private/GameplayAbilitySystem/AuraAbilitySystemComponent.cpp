@@ -3,6 +3,9 @@
 
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "GameplayAbilitySystem/GameplayAbilities/AuraGameplayAbility.h"
+#include "GameplayAbilitySystem/GameplayAbilities/AuraGameplayAbility.h"
+
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::GameplayEffectApplied);
@@ -17,9 +20,9 @@ void UAuraAbilitySystemComponent::GameplayEffectApplied(UAbilitySystemComponent*
 	OnEffectTagApplied.Broadcast(TagContainer);
 }
 
-void UAuraAbilitySystemComponent::AddCharacterAbilites(const TArray<TSubclassOf<UGameplayAbility>>& abilities)
+void UAuraAbilitySystemComponent::AddCharacterAbilites(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
 {
-	for (auto ability : abilities)
+	for (auto ability : StartupAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(ability,1);
 		/* Two-way to grant ability. */
@@ -28,6 +31,50 @@ void UAuraAbilitySystemComponent::AddCharacterAbilites(const TArray<TSubclassOf<
 
 		// GiveAbilityAndActivateOnce can only accept non const parameter. It'll activate the ability
 		// once it gave.
-		GiveAbilityAndActivateOnce(AbilitySpec);
+
+		// We will activate the ability according to input.
+		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+		{
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupAbilityTag);
+			GiveAbility(AbilitySpec);
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagPressed(FGameplayTag Tag)
+{
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagHeld(FGameplayTag Tag)
+{
+	if (!Tag.IsValid()) return;
+
+	for (auto ActivatableAbility : GetActivatableAbilities())
+	{
+		if (ActivatableAbility.DynamicAbilityTags.HasTagExact(Tag))
+		{
+			// To keep track for its status. We can implement some functionality.
+			AbilitySpecInputPressed(ActivatableAbility);
+			if (!ActivatableAbility.IsActive())
+			{
+				TryActivateAbility(ActivatableAbility.Handle);
+				// Don't manually activate it directly. Maybe some other ability or status can prevent
+				// this ability to be active. Therefore, use TryActivateAbility.
+			}
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagReleased(FGameplayTag Tag)
+{
+	if (!Tag.IsValid()) return;
+
+	for (auto ActivatableAbility : GetActivatableAbilities())
+	{
+		if (ActivatableAbility.DynamicAbilityTags.HasTagExact(Tag))
+		{
+			AbilitySpecInputReleased(ActivatableAbility);
+			// Don't cancel the ability yet. Maybe it will be canceled later. (For ex: When it reach to target)
+		}
 	}
 }

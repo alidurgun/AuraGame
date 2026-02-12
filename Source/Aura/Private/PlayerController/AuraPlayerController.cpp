@@ -8,7 +8,9 @@
 #include <EnhancedInputComponent.h>
 #include <InputActionValue.h>
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
+#include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "Input/AuraInputComponent.h"
 #include "Input/AuraInputConfig.h"
 #include "Interface/EnemyInterface.h"
@@ -28,17 +30,26 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag Tag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagPressed with tag : %s"), *Tag.ToString());
+	if (GetAuraASC() != nullptr)
+	{
+		AuraASC->AbilityInputTagPressed(Tag);
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag Tag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagHeld with tag : %s"), *Tag.ToString());
+	if (GetAuraASC() != nullptr)
+	{
+		AuraASC->AbilityInputTagHeld(Tag);
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag Tag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagReleased with tag : %s"), *Tag.ToString());
+	if (GetAuraASC() != nullptr)
+	{
+		AuraASC->AbilityInputTagReleased(Tag);
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -142,4 +153,14 @@ void AAuraPlayerController::CursorTrace()
 			}
 		}
 	}
+}
+
+UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraASC()
+{
+	if (AuraASC == nullptr)
+	{
+		AuraASC = Cast<UAuraAbilitySystemComponent>(
+			UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+	return AuraASC;
 }

@@ -32,4 +32,10 @@ public:
 	void GameplayEffectApplied(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle) const;
 
 	void AddCharacterAbilites(const TArray<TSubclassOf<UGameplayAbility>>& abilities);
+
+	void AbilityInputTagPressed(FGameplayTag Tag);
+
+	void AbilityInputTagHeld(FGameplayTag Tag);
+
+	void AbilityInputTagReleased(FGameplayTag Tag);
 };

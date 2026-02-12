@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UAuraAbilitySystemComponent;
 class UAuraInputConfig;
 class UInputMappingContext;
 class UInputAction;
@@ -61,6 +62,11 @@ private:
 	 * track actors under our cursor.
 	 */
 	void CursorTrace();
+
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent> AuraASC{nullptr}; 
+
+	UAuraAbilitySystemComponent* GetAuraASC();
 
 	TScriptInterface<IEnemyInterface> LastActor;
 	TScriptInterface<IEnemyInterface> CurrentActor;
