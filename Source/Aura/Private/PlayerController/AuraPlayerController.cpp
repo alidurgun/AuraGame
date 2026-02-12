@@ -8,6 +8,9 @@
 #include <EnhancedInputComponent.h>
 #include <InputActionValue.h>
 
+#include "GameplayTagContainer.h"
+#include "Input/AuraInputComponent.h"
+#include "Input/AuraInputConfig.h"
 #include "Interface/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
@@ -21,6 +24,21 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+}
+
+void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag Tag)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagPressed with tag : %s"), *Tag.ToString());
+}
+
+void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag Tag)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagHeld with tag : %s"), *Tag.ToString());
+}
+
+void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag Tag)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagReleased with tag : %s"), *Tag.ToString());
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -52,11 +70,15 @@ void AAuraPlayerController::SetupInputComponent()
 
 	// CastChecked will automatically check the if cast has succeeded or not.
 	// In order to handle input data we need to cast InputComponent to UEnhancedInputComponent.
-	UEnhancedInputComponent* Enhanced = CastChecked<UEnhancedInputComponent>(InputComponent);
+	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	
 	// ETriggerEvent::Triggered => while it is pressed.
 	// MoveAction will receive data.(It will fill with given data.)
-	Enhanced->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
+	AuraInputComponent->BindAbilityActions(InputConfig, this,
+		&AAuraPlayerController::AbilityInputTagPressed,
+		&AAuraPlayerController::AbilityInputTagHeld,
+		&AAuraPlayerController::AbilityInputTagReleased);
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)

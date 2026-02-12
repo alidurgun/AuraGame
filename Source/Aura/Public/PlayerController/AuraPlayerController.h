@@ -6,10 +6,12 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UAuraInputConfig;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
+struct FGameplayTag;
 
 /**
  * 
@@ -24,6 +26,15 @@ public:
 
 	virtual void PlayerTick(float DeltaTime) override;
 
+	// Ability function that will be responsible from when the related input has been pressed.
+	void AbilityInputTagPressed(FGameplayTag Tag);
+
+	// Ability function that will be responsible from when the related input has been held down.
+	void AbilityInputTagHeld(FGameplayTag Tag);
+
+	// Ability function that will be responsible from when the related input has been released.
+	void AbilityInputTagReleased(FGameplayTag Tag);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,7 +46,10 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MoveAction; // This input action will fill with the input data that we'll send.
-
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UAuraInputConfig> InputConfig;
+	
 	/*
 	 * This function will be binded to the MoveAction, and it'll be responsible from character movements.
 	 * It will act like a callback function for our inputs.
