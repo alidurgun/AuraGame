@@ -10,7 +10,9 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
+#include "Components/SplineComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
+#include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "Input/AuraInputComponent.h"
 #include "Input/AuraInputConfig.h"
 #include "Interface/EnemyInterface.h"
@@ -19,6 +21,8 @@ AAuraPlayerController::AAuraPlayerController()
 {
 	/* This will allow player to use inputs on multiplayer game. */
 	bReplicates = true;
+
+	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -30,7 +34,12 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag Tag)
 {
-	if (GetAuraASC() != nullptr)
+	if (CurrentActor == nullptr && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
+	{
+		// move
+		bAutoRunning = false;
+	}
+	else if (GetAuraASC() != nullptr)
 	{
 		AuraASC->AbilityInputTagPressed(Tag);
 	}
@@ -38,7 +47,26 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag Tag)
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag Tag)
 {
-	if (GetAuraASC() != nullptr)
+	if (CurrentActor == nullptr && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
+	{
+		// move
+		FollowTime += GetWorld()->GetDeltaSeconds(); // update the followtime.
+		FHitResult HitResult;
+		if (GetHitResultUnderCursor(ECC_Visibility,false, HitResult))
+		{
+			CachedDestination = HitResult.ImpactPoint;
+		}
+		if (APawn* ControlledPawn = GetPawn())
+		{
+			// calculate the direction
+			const FVector WorldDirection = (CachedDestination-ControlledPawn->GetActorLocation()).
+												GetSafeNormal();
+
+			// Go toward to that direction
+			ControlledPawn->AddMovementInput(WorldDirection);
+		}
+	}
+	else if (GetAuraASC() != nullptr)
 	{
 		AuraASC->AbilityInputTagHeld(Tag);
 	}
