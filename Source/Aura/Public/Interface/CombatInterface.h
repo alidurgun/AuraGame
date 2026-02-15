@@ -24,4 +24,6 @@ class AURA_API ICombatInterface
 public:
 	
 	virtual int32 GetPlayerLevel() const { return 0; }
+	// To get the location for the tip of the weapon.
+	virtual const FVector GetCombatSocketLocation() const { return FVector::ZeroVector; }
 };
