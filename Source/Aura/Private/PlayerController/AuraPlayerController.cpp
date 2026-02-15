@@ -10,6 +10,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "Components/SplineComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
@@ -30,17 +32,18 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+
+	if (bAutoRunning)
+	{
+		AutoRun();
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag Tag)
 {
-	if (CurrentActor == nullptr && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
+	if (GetAuraASC() != nullptr)
 	{
-		// move
 		bAutoRunning = false;
-	}
-	else if (GetAuraASC() != nullptr)
-	{
 		AuraASC->AbilityInputTagPressed(Tag);
 	}
 }
@@ -74,7 +77,41 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag Tag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag Tag)
 {
-	if (GetAuraASC() != nullptr)
+	if (CurrentActor == nullptr && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
+	{
+		// move
+		APawn* ControlledPawn = GetPawn();
+		if (FollowTime <= ShortPressThreshold && ControlledPawn)
+		{
+			/*
+			 * This function using for finds path instantly, in a FindPath Synchronously.
+			 */
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(
+				this,
+				ControlledPawn->GetActorLocation(),
+				CachedDestination))
+			{
+				Spline->ClearSplinePoints();
+				for (auto point : NavPath->PathPoints)
+				{
+					Spline->AddSplinePoint(point, ESplineCoordinateSpace::World);
+					DrawDebugSphere(GetWorld(), point, 8.f, 8, FColor::Yellow, false, 5.0f);
+				}
+				/*
+				 * Get the latest closest location for the clicked position. To prevent a potential bug
+				 * that might be occured when the player click to some place that navigation mesh is not
+				 * available. (For ex: obstacle etc.)
+				 */
+				if (!NavPath->PathPoints.IsEmpty())
+				{
+					CachedDestination = NavPath->PathPoints.Last();
+				}
+				bAutoRunning = true;
+			}
+		}
+		FollowTime = 0.0f; // reset followtime.
+	}
+	else if (GetAuraASC() != nullptr)
 	{
 		AuraASC->AbilityInputTagReleased(Tag);
 	}
@@ -191,4 +228,30 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetAuraASC()
 			UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
 	}
 	return AuraASC;
+}
+
+void AAuraPlayerController::AutoRun()
+{
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		/*
+		 * Get the closest location to the actor. (Our first spline point may not be always the character's location)
+		 * Hence the function will be called every frame this closest location will update frequently.
+		 */
+		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(
+			ControlledPawn->GetActorLocation(),
+			ESplineCoordinateSpace::World);
+
+		// Calculate direction to the closest point.
+		const FVector Direction = Spline->FindDirectionClosestToWorldLocation(
+			LocationOnSpline,
+			ESplineCoordinateSpace::World);
+
+		ControlledPawn->AddMovementInput(Direction);
+		const float DistanceToDestination = (CachedDestination - LocationOnSpline).Length();
+		if (DistanceToDestination<=AutoRunAcceptanceRadius)
+		{
+			bAutoRunning = false;
+		}
+	}
 }

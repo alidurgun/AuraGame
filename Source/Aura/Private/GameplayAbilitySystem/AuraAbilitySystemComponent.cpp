@@ -11,7 +11,7 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::GameplayEffectApplied);
 }
 
-void UAuraAbilitySystemComponent::GameplayEffectApplied(UAbilitySystemComponent* Source,
+void UAuraAbilitySystemComponent::GameplayEffectApplied_Implementation(UAbilitySystemComponent* Source,
                                                         const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle) const
 {
 	FGameplayTagContainer TagContainer;

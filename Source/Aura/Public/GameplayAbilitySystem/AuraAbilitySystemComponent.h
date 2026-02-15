@@ -29,6 +29,12 @@ public:
 	
 	FOnEffectTagAppliedSignature OnEffectTagApplied;
 
+	/*
+	 * Client => this is client RPC.
+	 * Reliable => Guaranteed to reach the client even in the case of packet loss. It will keep sending
+	 * until it receives the confirmation.
+	 */
+	UFUNCTION(Client,Reliable)
 	void GameplayEffectApplied(UAbilitySystemComponent* Source, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle) const;
 
 	void AddCharacterAbilites(const TArray<TSubclassOf<UGameplayAbility>>& abilities);

@@ -89,4 +89,6 @@ private:
 	// To generate a line from our pathfind points.(instead of sharp turns it will be smooth line)
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
+
+	void AutoRun();
 };
