@@ -8,7 +8,7 @@
 
 // This will be another output pin for the CreateTargetDataUnderMouse function.
 // To Execute this pin we have to broadcast this value.
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMouseTargetDataSignature, const FVector&, Data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMouseTargetDataSignature, const FGameplayAbilityTargetDataHandle&, Data);
 
 /**
  * 
@@ -33,7 +33,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FMouseTargetDataSignature ValidData;
 
+	void OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag);
+
 private:
 	// Called to trigger the actual task once the delegates have been set up.
 	virtual void Activate() override;
+
+	void SendMouseCursorData();
 };

@@ -27,8 +27,8 @@ void UAuraProjectileSpell::SpawnProjectile()
 
 		// TODO: Set the Projectile Rotation.
 
-		// Spawns given class and returns class T pointer. It gives opportunity to set parameters beforehand.
-		// caller must invoke FinishSpawningActor after this one.
+		// Spawns given class and returns class T pointer. It gives opportunity to set parameters
+		// beforehand. Caller must invoke FinishSpawningActor after this one.
 		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,
 			SpawnTransform,
