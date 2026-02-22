@@ -50,7 +50,7 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag Tag)
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag Tag)
 {
-	if (CurrentActor == nullptr && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
+	if ((CurrentActor == nullptr && !bShiftPressed) && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
 	{
 		// move
 		FollowTime += GetWorld()->GetDeltaSeconds(); // update the followtime.
@@ -77,7 +77,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag Tag)
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag Tag)
 {
-	if (CurrentActor == nullptr && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
+	if ((CurrentActor == nullptr && !bShiftPressed) && Tag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RMB))
 	{
 		// move
 		APawn* ControlledPawn = GetPawn();
@@ -155,6 +155,9 @@ void AAuraPlayerController::SetupInputComponent()
 		&AAuraPlayerController::AbilityInputTagPressed,
 		&AAuraPlayerController::AbilityInputTagHeld,
 		&AAuraPlayerController::AbilityInputTagReleased);
+
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftPressed);
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftReleased);
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)

@@ -50,6 +50,14 @@ private:
 	UInputAction* MoveAction; // This input action will fill with the input data that we'll send.
 
 	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* ShiftAction;
+
+	FORCEINLINE void ShiftPressed() { bShiftPressed = true; }
+	FORCEINLINE void ShiftReleased() { bShiftPressed = false; }
+	
+	bool bShiftPressed{false};
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
 
 	/*

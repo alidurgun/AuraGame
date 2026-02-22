@@ -14,7 +14,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UAuraProjectileSpell::SpawnProjectile()
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 {
 	// only server can activate ability.
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
@@ -22,8 +22,13 @@ void UAuraProjectileSpell::SpawnProjectile()
 	if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
 		const FVector ProjectileSpawnLocation = CombatInterface->GetCombatSocketLocation();
+
+		FRotator Rotation{(ProjectileLocation - ProjectileSpawnLocation).Rotation()};
+		Rotation.Pitch = 0.0f; // want that the projectile should go parallel to the ground.
+		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(ProjectileSpawnLocation);
+		SpawnTransform.SetRotation(Rotation.Quaternion());
 
 		// TODO: Set the Projectile Rotation.
 
