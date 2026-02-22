@@ -4,6 +4,7 @@
 #include "Character/BaseCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 
@@ -16,6 +17,8 @@ ABaseCharacter::ABaseCharacter()
 	// To disable camera change when there is another character nearby.
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon Mesh"));
 	WeaponMesh->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
