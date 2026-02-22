@@ -5,6 +5,9 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AAuraProjectile::AAuraProjectile()
@@ -18,7 +21,7 @@ AAuraProjectile::AAuraProjectile()
 	SetRootComponent(Sphere);
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
-	Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	//Sphere->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
@@ -26,13 +29,39 @@ AAuraProjectile::AAuraProjectile()
 	ProjectileMovement->InitialSpeed = 550.0f;
 	ProjectileMovement->MaxSimulationIterations = 550.0f;
 	ProjectileMovement->ProjectileGravityScale = 0.0f;
+}
 
+void AAuraProjectile::Destroyed()
+{
+	if (!bHit && !HasAuthority())
+	{
+		CreateExplosion();
+	}
+	Super::Destroyed();
+}
+
+void AAuraProjectile::CreateExplosion()
+{
+	UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation());
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
+	TrailSoundComponent->Stop();
 }
 
 void AAuraProjectile::SphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
-	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-	bool bFromSweep, const FHitResult& SweepResult)
+                                         AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+                                         bool bFromSweep, const FHitResult& SweepResult)
 {
+	CreateExplosion();
+
+	// only server can destroy it.
+	if (HasAuthority())
+	{
+		Destroy();
+	}
+	else
+	{
+		bHit = true;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -40,4 +69,8 @@ void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	Sphere->OnComponentBeginOverlap.AddDynamic(this,&AAuraProjectile::SphereBeginOverlap);
+
+	TrailSoundComponent = UGameplayStatics::SpawnSoundAttached(TrailSound,GetRootComponent());
+
+	SetLifeSpan(LifeSpan);
 }

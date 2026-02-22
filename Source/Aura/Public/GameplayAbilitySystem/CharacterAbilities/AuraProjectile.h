@@ -8,6 +8,8 @@
 
 class UProjectileMovementComponent;
 class USphereComponent;
+class UNiagaraSystem;
+
 /*
  * This class will be related with projectile spells.
  * This class will be used for casting spells.
@@ -20,7 +22,10 @@ class AURA_API AAuraProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AAuraProjectile();
-	
+
+	virtual void Destroyed() override;
+	void CreateExplosion();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,4 +40,22 @@ private:
 	// This component used to give velocity to the actor.
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovement;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UNiagaraSystem> ImpactEffect;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USoundBase> TrailSound;
+
+	// Audio Component is created from UGameplayStatics::SpawnSoundAttached to use looping sounds.
+	TObjectPtr<UAudioComponent> TrailSoundComponent;
+
+	// If server destroys the actor without we hit something we should play sound and effect too.
+	bool bHit{false};
+
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpan{5.0f}; // max time of Projectile can stay in the game.
 };
