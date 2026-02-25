@@ -3,6 +3,8 @@
 
 #include "GameplayAbilitySystem/CharacterAbilities/AuraProjectile.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -57,6 +59,11 @@ void AAuraProjectile::SphereBeginOverlap(UPrimitiveComponent* OverlappedComponen
 	// only server can destroy it.
 	if (HasAuthority())
 	{
+		// Only server can apply damage.
+		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+		}
 		Destroy();
 	}
 	else

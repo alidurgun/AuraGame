@@ -59,4 +59,6 @@ void AEnemyCharacter::InitAbilityComponent()
 	// For the enemy pawn both owner and avatar should be same and equal to "this".
 	AbilitySystemComponent->InitAbilityActorInfo(this,this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
+
+	InitializeDefaultValues();
 }

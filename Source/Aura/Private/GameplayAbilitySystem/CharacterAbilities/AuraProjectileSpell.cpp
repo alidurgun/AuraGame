@@ -3,6 +3,9 @@
 
 #include "GameplayAbilitySystem/CharacterAbilities/AuraProjectileSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "Projects.h"
+#include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/CharacterAbilities/AuraProjectile.h"
 #include "Interface/CombatInterface.h"
 
@@ -23,14 +26,14 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 	{
 		const FVector ProjectileSpawnLocation = CombatInterface->GetCombatSocketLocation();
 
+		// TODO: Set the Projectile Rotation.
 		FRotator Rotation{(ProjectileLocation - ProjectileSpawnLocation).Rotation()};
 		Rotation.Pitch = 0.0f; // want that the projectile should go parallel to the ground.
 		
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(ProjectileSpawnLocation);
 		SpawnTransform.SetRotation(Rotation.Quaternion());
-
-		// TODO: Set the Projectile Rotation.
+		// End Set the Projectile Rotation.
 
 		// Spawns given class and returns class T pointer. It gives opportunity to set parameters
 		// beforehand. Caller must invoke FinishSpawningActor after this one.
@@ -42,6 +45,12 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
 		// TODO: Give the projectile a gameplay effect spec for causing damage.
+		// create ASC.
+		UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		// Create FGameplayEffectSpecHandle and set it for the AuraProjectile side.
+		FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass,GetAbilityLevel(),SourceASC->MakeEffectContext());
+		Projectile->DamageEffectSpecHandle = SpecHandle;
+		// End Give the projectile a gameplay effect spec for causing damage.
 
 		Projectile->FinishSpawning(SpawnTransform);
 	}

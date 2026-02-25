@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "AuraProjectile.generated.h"
 
@@ -25,6 +26,15 @@ public:
 
 	virtual void Destroyed() override;
 	void CreateExplosion();
+
+	/*
+	 * ExposeOnSpawn = true:
+	 * Adds that variable as an input pin on the BP Spawn Actor node.
+	 * Give opportunity to set property's value at the moment the object is created.
+	 * It means that the property will be editable when the object is spawned.
+	 */
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 
 protected:
 	// Called when the game starts or when spawned
