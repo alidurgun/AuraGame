@@ -3,3 +3,7 @@
 
 #include "GameplayAbilitySystem/DataAsset/CharacterClassInfo.h"
 
+FCharacterClassDefaultInfo UCharacterClassInfo::GetCharacterClassDefaultInfo(ECharacterClass CharacterClass)
+{
+	return CharacterClassInformation.FindChecked(CharacterClass);
+}

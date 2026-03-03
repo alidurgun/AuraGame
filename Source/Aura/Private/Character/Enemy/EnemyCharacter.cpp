@@ -6,6 +6,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
 #include "UI/Widget/AuraUserWidget.h"
@@ -88,4 +89,10 @@ void AEnemyCharacter::InitAbilityComponent()
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();
 
 	InitializeDefaultValues();
+}
+
+void AEnemyCharacter::InitializeDefaultValues() const
+{
+	UAuraAbilitySystemBPLibrary::InitializeDefaultAttributes(this, CharacterClass,
+		CharacterLevel, AbilitySystemComponent);
 }

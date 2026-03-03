@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemBPLibrary.generated.h"
 
+enum class ECharacterClass : uint8;
 class UAuraAttributeMenuWC;
 class UAuraOverlayWidgetController;
 /**
@@ -29,4 +31,11 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemBPLibrary|WidgetController")
 	static UAuraAttributeMenuWC* GetAttributeMenuWidgetController(const UObject* WorldContext);
+
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|CharacterClassDefaults")
+	static void InitializeDefaultAttributes(const UObject* WorldContext, ECharacterClass CharacterClass,
+		int32 Level, UAbilitySystemComponent* ASC);
+
+private:
+	static void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC);
 };

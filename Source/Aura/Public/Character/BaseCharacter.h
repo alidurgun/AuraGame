@@ -53,7 +53,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> VitalDefaultAttributes;
 
-	void InitializeDefaultValues() const;
+	virtual void InitializeDefaultValues() const;
 
 	void AddCharacterAbilities() const;
 
