@@ -51,13 +51,17 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 		// Create FGameplayEffectSpecHandle and set it for the AuraProjectile side.
 		FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass,GetAbilityLevel(),SourceASC->MakeEffectContext());
 		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+
+		// This damage value will be evaluated according to ability level. Relevant damage value will retrieve
+		// from the given CurveTable.
+		const float CurrentDamage = Damage.GetValueAtLevel(GetAbilityLevel());
 		
 		// SetByCaller is a key value pair that will be used in the Gameplay Effect.
 		// So the GameplayTag that we are using here is the key value and the Magnitude is the value.
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
 			SpecHandle,
 			GameplayTags.Ability_FireBolt_Damage,
-			30.0f);
+			CurrentDamage);
 		
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		// End Give the projectile a gameplay effect spec for causing damage.
