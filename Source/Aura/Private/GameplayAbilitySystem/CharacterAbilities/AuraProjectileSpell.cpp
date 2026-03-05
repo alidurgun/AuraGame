@@ -7,6 +7,7 @@
 #include "Projects.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/CharacterAbilities/AuraProjectile.h"
+#include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "Interface/CombatInterface.h"
 
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -49,6 +50,15 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 		UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 		// Create FGameplayEffectSpecHandle and set it for the AuraProjectile side.
 		FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass,GetAbilityLevel(),SourceASC->MakeEffectContext());
+		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		
+		// SetByCaller is a key value pair that will be used in the Gameplay Effect.
+		// So the GameplayTag that we are using here is the key value and the Magnitude is the value.
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
+			SpecHandle,
+			GameplayTags.Ability_FireBolt_Damage,
+			30.0f);
+		
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		// End Give the projectile a gameplay effect spec for causing damage.
 

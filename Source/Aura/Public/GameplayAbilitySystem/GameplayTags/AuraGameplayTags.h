@@ -50,6 +50,10 @@ public:
 	FGameplayTag InputTag_4;
 	/* End Input Tags */
 
+	/* Ability Damage Tags */
+	FGameplayTag Ability_FireBolt_Damage;
+	/* End Ability Damage Tags */
+
 private:
 	static FAuraGameplayTags instance;
 };

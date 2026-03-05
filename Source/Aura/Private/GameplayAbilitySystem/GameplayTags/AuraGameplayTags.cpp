@@ -101,4 +101,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("InputTag.4"),
 		FString("Input for Keyboard 4 button."));
 	/* End Input Tags initialization */
+
+	/* Ability Damage Tags initialization */
+	instance.Ability_FireBolt_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Ability.FireBolt.Damage"),
+		FString("FireBolt Damage Tag"));
+	/* End Ability Damage Tags initialization */
 }
