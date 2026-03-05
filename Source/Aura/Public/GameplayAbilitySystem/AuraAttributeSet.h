@@ -73,7 +73,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Vital Stats")
 	FGameplayAttributeData Mana;
-	// Vital Attributes
+	// !Vital Attributes
 
 	// Primary Attributes
 	// Increases physical damage.
@@ -91,7 +91,7 @@ public:
 	// Increases health.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Vigor, Category="Primary Stats")
 	FGameplayAttributeData Vigor;
-	// Primary Attributes
+	// !Primary Attributes
 
 	// Secondary Attributes
 	// Reduces damage taken, improves Block Chance. Depends on Resilience.
@@ -133,19 +133,25 @@ public:
 	// Maximum amount of Mana obtainable. Depends on Intelligence.
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Vital Stats")
 	FGameplayAttributeData MaxMana;
-	// Secondary Attributes
+	// !Secondary Attributes
+
+	// Meta Attributes
+	// Meta Attributes will not be replicated therefore no ReplicatedUsing for Meta Attributes.
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	// !Meta Attributes
 
 	// Vital Attribute Accessors
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana);
-	// Vital Attribute Accessors
+	// !Vital Attribute Accessors
 
 	// Primary Attribute Accessors
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor);
-	// Primary Attribute Accessors
+	// !Primary Attribute Accessors
 
 	// Secondary Attribute Accessors
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor);
@@ -158,7 +164,11 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
-	// Secondary Attribute Accessors
+	// !Secondary Attribute Accessors
+
+	// Meta Attributes
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
+	// !Meta Attributes
 
 	// Attribute Callback Functions
 	UFUNCTION()

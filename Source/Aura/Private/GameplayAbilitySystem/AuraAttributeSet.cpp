@@ -177,6 +177,22 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	{
 		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	}
+
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		// Consume the incoming damage. Clear the cache.
+		const float LocalIncomingDamage { GetIncomingDamage() };
+		SetIncomingDamage(0.0f);
+		if (LocalIncomingDamage > 0.0f)
+		{
+			// We can extend our mathematical operation in here to calculate damage.
+			const float NewHealth { GetHealth() - LocalIncomingDamage };
+			SetHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+
+			// Determine if the damage is going to kill the enemy or not.
+			const bool bFatal { NewHealth <= 0.0f };
+		}
+	}
 }
 
 void UAuraAttributeSet::SetEffectProperties(const struct FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
