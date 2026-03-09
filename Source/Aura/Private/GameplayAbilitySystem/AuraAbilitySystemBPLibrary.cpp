@@ -3,6 +3,7 @@
 
 #include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 
+#include "ToolContextInterfaces.h"
 #include "GameMode/AuraGameModeBase.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
 #include "GameplayAbilitySystem/DataAsset/CharacterClassInfo.h"
@@ -61,6 +62,23 @@ void UAuraAbilitySystemBPLibrary::InitializeDefaultAttributes(const UObject* Wor
 	ApplyEffectToSelf(ClassDefaultInfo.PrimaryEffects, Level, ASC);
 	ApplyEffectToSelf(CharClassInfo->SecondaryAttributes, Level, ASC);
 	ApplyEffectToSelf(CharClassInfo->VitalAttributes, Level, ASC);
+}
+
+void UAuraAbilitySystemBPLibrary::GiveCommonAbilities(const UObject* WorldContext, UAbilitySystemComponent* ASC)
+{
+	// first get the AAuraGameModeBase.
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContext));
+	if (AuraGameMode == nullptr) return;
+
+	// then we can retrieve the characterclassinfo.
+	UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
+	for (auto AbilityClass : CharacterClassInfo->CommonAbilities)
+	{
+		// Then we can give this ability to ASC.
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,1);
+		ASC->GiveAbility(AbilitySpec);
+	}
+	
 }
 
 void UAuraAbilitySystemBPLibrary::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC)

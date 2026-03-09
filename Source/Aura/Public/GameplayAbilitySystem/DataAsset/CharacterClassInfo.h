@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "CharacterClassInfo.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 /*
  * This enum class will represent different types of character classes that will be used in the game.
@@ -52,4 +53,7 @@ public:
 	TSubclassOf<UGameplayEffect> VitalAttributes;
 
 	FCharacterClassDefaultInfo GetCharacterClassDefaultInfo(ECharacterClass CharacterClass);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Common Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
 };

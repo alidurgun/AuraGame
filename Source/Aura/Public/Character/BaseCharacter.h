@@ -27,6 +27,10 @@ public:
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
 	virtual const FVector GetCombatSocketLocation() const override;
+
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+
+	virtual void Die() override;
 	
 protected:	
 	UPROPERTY(EditAnywhere, Category="Combat")
@@ -63,4 +67,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditAnywhere, Category="Animations")
+	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastHandleDeath();
 };

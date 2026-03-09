@@ -6,9 +6,11 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
+#include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "UI/Widget/AuraUserWidget.h"
 
 AEnemyCharacter::AEnemyCharacter()
@@ -50,12 +52,26 @@ void AEnemyCharacter::Unhighlight()
 	}
 }
 
+void AEnemyCharacter::EnemyHitReaction(const FGameplayTag Tag, int32 NewTagCount)
+{
+	bHitReacting = NewTagCount > 0;
+
+	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
+}
+
+void AEnemyCharacter::Die()
+{
+	SetLifeSpan(LifeSpan);
+	Super::Die();
+}
+
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// Hence Ability System Control has been bound to pawn directly, set its owner and avatar in BeginPlay
 	InitAbilityComponent();
+	UAuraAbilitySystemBPLibrary::GiveCommonAbilities(this,AbilitySystemComponent);
 
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
@@ -74,6 +90,11 @@ void AEnemyCharacter::BeginPlay()
 			{
 				OnMaxHealthChanged.Broadcast(data.NewValue);
 			});
+
+		AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().HitReact,
+			EGameplayTagEventType::NewOrRemoved).AddUObject(
+			this, &AEnemyCharacter::EnemyHitReaction);
+		
 
 		OnHealthChanged.Broadcast(AuraAS->GetHealth());
 		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());

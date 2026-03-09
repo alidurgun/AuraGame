@@ -54,6 +54,10 @@ public:
 	FGameplayTag Ability_FireBolt_Damage;
 	/* End Ability Damage Tags */
 
+	/* Hit React Tags */
+	FGameplayTag HitReact;
+	/* End Hit React Tags */
+
 private:
 	static FAuraGameplayTags instance;
 };

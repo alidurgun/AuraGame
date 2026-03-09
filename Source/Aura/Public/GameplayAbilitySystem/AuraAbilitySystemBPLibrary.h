@@ -36,6 +36,9 @@ public:
 	static void InitializeDefaultAttributes(const UObject* WorldContext, ECharacterClass CharacterClass,
 		int32 Level, UAbilitySystemComponent* ASC);
 
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|CharacterClassDefaults")
+	static void GiveCommonAbilities(const UObject* WorldContext, UAbilitySystemComponent* ASC);
+
 private:
 	static void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC);
 };

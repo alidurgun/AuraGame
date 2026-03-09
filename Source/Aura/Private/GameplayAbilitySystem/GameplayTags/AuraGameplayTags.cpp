@@ -107,4 +107,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Ability.FireBolt.Damage"),
 		FString("FireBolt Damage Tag"));
 	/* End Ability Damage Tags initialization */
+
+	/* Hit React Tags Initialization */
+	instance.HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.HitReact"),
+		FString("Effect for Hit Reaction"));
+	/* End Hit React Tags Initialization */
 }

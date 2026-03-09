@@ -37,6 +37,36 @@ const FVector ABaseCharacter::GetCombatSocketLocation() const
 	return WeaponMesh->GetSocketLocation(WeaponTipSocketName);
 }
 
+UAnimMontage* ABaseCharacter::GetHitReactMontage_Implementation()
+{
+	return HitReactMontage;
+}
+
+void ABaseCharacter::Die()
+{
+	// detach weapon from the character.
+	WeaponMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	MulticastHandleDeath_Implementation();
+}
+
+void ABaseCharacter::MulticastHandleDeath_Implementation()
+{
+	// To make weapon fell down and interact with the ground.
+	WeaponMesh->SetSimulatePhysics(true);
+	WeaponMesh->SetEnableGravity(true);
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+
+	// Body also should fell down and interact with the gravity etc.
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetEnableGravity(true);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	// Blocking WorldStatic so it won't ignore the pillars etc.
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
+	// Disable the capsule component too, so character won't get blocked.
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void ABaseCharacter::InitAbilityComponent()
 {
 }
@@ -68,3 +98,5 @@ void ABaseCharacter::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffe
 	const FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, Level,EffectContextHandle);
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), AbilitySystemComponent);
 }
+
+
