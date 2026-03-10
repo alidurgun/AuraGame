@@ -7,6 +7,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
+#include "GeometryCollection/GeometryCollectionParticlesData.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -49,6 +50,23 @@ void ABaseCharacter::Die()
 	MulticastHandleDeath_Implementation();
 }
 
+void ABaseCharacter::Dissolve()
+{
+	if (BodyDissolveMaterial)
+	{
+		UMaterialInstanceDynamic* BodyDynamicInstance = UMaterialInstanceDynamic::Create(BodyDissolveMaterial, this);
+		GetMesh()->SetMaterial(0, BodyDynamicInstance);
+		BodyDissolveTimeline(BodyDynamicInstance);
+	}
+	if (WeaponDissolveMaterial)
+	{
+		UMaterialInstanceDynamic* WeaponDynamicInstance = UMaterialInstanceDynamic::Create(WeaponDissolveMaterial, this);
+		WeaponMesh->SetMaterial(0,WeaponDynamicInstance);
+		WeaponDissolveTimeline(WeaponDynamicInstance);
+	}
+
+}
+
 void ABaseCharacter::MulticastHandleDeath_Implementation()
 {
 	// To make weapon fell down and interact with the ground.
@@ -65,6 +83,9 @@ void ABaseCharacter::MulticastHandleDeath_Implementation()
 
 	// Disable the capsule component too, so character won't get blocked.
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// Call Dissolve for both client and server.
+	Dissolve();
 }
 
 void ABaseCharacter::InitAbilityComponent()

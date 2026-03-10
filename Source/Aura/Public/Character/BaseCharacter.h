@@ -31,6 +31,18 @@ public:
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
 	virtual void Die() override;
+
+	// Function to create a dynamic material instance. Then it will call the dissolvetimeline functions for body
+	// and weapon to make them dissolve in time.
+	void Dissolve();
+
+	// Body dissolve function. It will work with a timeline.
+	UFUNCTION(BlueprintImplementableEvent)
+	void BodyDissolveTimeline(UMaterialInstanceDynamic* BodyDissolve);
+
+	// Weapon dissolve function. It will work with a timeline.
+	UFUNCTION(BlueprintImplementableEvent)
+	void WeaponDissolveTimeline(UMaterialInstanceDynamic* WeaponDissolve);
 	
 protected:	
 	UPROPERTY(EditAnywhere, Category="Combat")
@@ -73,4 +85,10 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHandleDeath();
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Dissolve")
+	TObjectPtr<UMaterialInstance> BodyDissolveMaterial;
+
+	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Dissolve")
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterial;
 };
