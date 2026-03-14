@@ -3,7 +3,6 @@
 
 #include "PlayerController/AuraPlayerController.h"
 
-#include <InputMappingContext.h>
 #include <EnhancedInputSubsystems.h>
 #include <EnhancedInputComponent.h>
 #include <InputActionValue.h>
@@ -16,8 +15,9 @@
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "Input/AuraInputComponent.h"
-#include "Input/AuraInputConfig.h"
 #include "Interface/EnemyInterface.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageTextComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
@@ -114,6 +114,31 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag Tag)
 	else if (GetAuraASC() != nullptr)
 	{
 		AuraASC->AbilityInputTagReleased(Tag);
+	}
+}
+
+void AAuraPlayerController::ShowDamageComponent_Implementation(float Damage, ACharacter* TargetCharacter)
+{
+	// IsValid is checking the input parameter is null or not. In addition to that it will also check the
+	// if the parameter is pending to kill. Therefore, we have used IsValid for the TargetCharacter.
+	if (IsValid(TargetCharacter) && DamageTextComponentClass)
+	{
+		// It needs to construct that widget component. To do that we need widget component class.
+		// Outer should be TargetCharacter hence we will use TargetCharacter to spawn component.
+		UDamageTextComponent* DamageText = NewObject<UDamageTextComponent>(TargetCharacter, DamageTextComponentClass);
+
+		// If the component created dynamically, then it has to registered by calling register component.
+		// CreateDefaultSubObject function is automatically registering. But if we do not use that we have to
+		// do it manually.
+		DamageText->RegisterComponent();
+
+		// Attach it to component in order to spawn it on the correct location.
+		DamageText->AttachToComponent(TargetCharacter->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+		// Detach it because it will play an animation, and we do not need to keep that on the component.
+		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+
+		DamageText->SetDamageText(Damage);
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UDamageTextComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
 class UAuraInputConfig;
@@ -36,6 +37,15 @@ public:
 
 	// Ability function that will be responsible from when the related input has been released.
 	void AbilityInputTagReleased(FGameplayTag Tag);
+
+	/*
+	 * This function will spawn the DamageTextComponent, set the number of the component, attach and
+	 * detach the component.
+	 * @param[0] in Damage => Damage applied to the target character.
+	 * @param[1] in TargetCharacter => Which character should have this damage component to display.
+	 */
+	UFUNCTION(Client, Reliable)
+	void ShowDamageComponent(float Damage, ACharacter* TargetCharacter);
 
 protected:
 	virtual void BeginPlay() override;
@@ -99,4 +109,8 @@ private:
 	TObjectPtr<USplineComponent> Spline;
 
 	void AutoRun();
+
+	// To specify which class going to spawn.
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 };

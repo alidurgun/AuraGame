@@ -8,7 +8,9 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "Interface/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "PlayerController/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -206,6 +208,16 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 				FGameplayTagContainer TagContainer;
 				TagContainer.AddTag(FAuraGameplayTags::Get().HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			}
+
+			// Do not show self damage.
+			if (Props.SourceCharacter != Props.TargetCharacter)
+			{
+				// Player index 0 will give locally controlled player. For server => server, For client=> client
+				if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter,0)))
+				{
+					PC->ShowDamageComponent(LocalIncomingDamage, Props.TargetCharacter);
+				}
 			}
 		}
 	}
