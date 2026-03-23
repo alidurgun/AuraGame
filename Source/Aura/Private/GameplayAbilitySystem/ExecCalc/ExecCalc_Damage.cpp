@@ -3,8 +3,11 @@
 
 #include "GameplayAbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
+#include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
+#include "GameplayAbilitySystem/DataAsset/CharacterClassInfo.h"
 #include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
+#include "Interface/CombatInterface.h"
 #include "UObject/FastReferenceCollector.h"
 
 // Row struct that will be used for internal usage in cpp side for execution calculation.
@@ -19,6 +22,11 @@ struct AuraDamageStatics
 	 * FGameplayEffectAttributeCaptureDefinition => BlockChanceDef
 	 */
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);
 
 	AuraDamageStatics()
 	{
@@ -34,6 +42,11 @@ struct AuraDamageStatics
 		 * param[3] => bool value for snapshotting.
 		 */
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);
 	}
 };
 
@@ -47,6 +60,11 @@ UExecCalc_Damage::UExecCalc_Damage()
 {
 	// BlockChanceDef created via macro.
 	RelevantAttributesToCapture.Add(DamageStatics().BlockChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().ArmorDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics().CriticalHitDamageDef);
+	RelevantAttributesToCapture.Add(DamageStatics().ArmorPenetrationDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -66,6 +84,40 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParams.SourceTags = SourceTags;
 	EvaluateParams.TargetTags = TargetTags;
 
+	/*
+ * GetSetByCallerMagnitude function can have 3 parameters 2 of them is optional
+ * param[0] => name of the tag
+ * param[1] => to enable warning if given tag is not found. (true)
+ * param[2] => Default value for the tag when the tag is not found. (0)
+ */
+	float Damage = GESpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Ability_FireBolt_Damage);
+
+	float ArmorValue{0.0f};
+	float ArmorPenetrationValue{0.0f};
+
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorDef, EvaluateParams, ArmorValue);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().ArmorPenetrationDef, EvaluateParams, ArmorPenetrationValue);
+
+	// To get the player levels for both source and target. To get the correct value from CT.
+	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceActor);
+	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetActor);
+
+	// Get the character class info. To retrieve CT from it.
+	UCharacterClassInfo* CharInfo = UAuraAbilitySystemBPLibrary::GetCharacterClassInfo(SourceActor);
+
+	// Get the relevant tables from the CT by using curve name.
+	const FRealCurve* ArmorPenetrationCurve = CharInfo->DamageCalculationCoefficients->FindCurve(FName("ArmorPenetration"), FString());
+	const FRealCurve* EffectiveArmorCurve = CharInfo->DamageCalculationCoefficients->FindCurve(FName("EffectiveArmor"), FString());
+
+	// Get the coefficients for current levels.
+	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
+	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+
+	// Calculation relevant with Armor Penetration and Armor
+	const float EffectiveArmor = ArmorValue * (100-ArmorPenetrationValue * ArmorPenetrationCoefficient) / 100.0f;
+
+	Damage *= (100 - EffectiveArmor * EffectiveArmorCoefficient) / 100.0f;
+	
 	float BlockChanceValue{0.0f};
 
 	// To get the captured attribute, BlockChanceValue will be filled with captured attribute magnitude.
@@ -74,16 +126,26 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	BlockChanceValue = BlockChanceValue<10.0f ? 10.0f : BlockChanceValue;
 
-	/*
-	 * GetSetByCallerMagnitude function can have 3 parameters 2 of them is optional
-	 * param[0] => name of the tag
-	 * param[1] => to enable warning if given tag is not found. (true)
-	 * param[2] => Default value for the tag when the tag is not found. (0)
-	 */
-	float Damage = GESpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Ability_FireBolt_Damage);
-
-	bool bAttackBlocked = FMath::RandRange(1,100) <= BlockChanceValue;
+	const bool bAttackBlocked = FMath::RandRange(1,100) <= BlockChanceValue;
 	Damage = bAttackBlocked ? Damage/2.0f : Damage;
+
+	// If attack is not blocked then crit can occur. Calculate crit chance and implement the crit logic.
+	if (!bAttackBlocked)
+	{
+		float CritHitChanceVal{0.0f};
+		float CritHitDamageVal{0.0f};
+		float CritHitResVal{0.0f};
+
+		// Retrieve crit related props.
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitChanceDef, EvaluateParams, CritHitChanceVal);
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitDamageDef, EvaluateParams, CritHitDamageVal);
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitResistanceDef, EvaluateParams, CritHitResVal);
+		
+		CritHitChanceVal *= 1.5f - (CritHitResVal * 0.85f);
+		const bool bCriticalHit = FMath::RandRange(1,100) <= CritHitChanceVal;
+
+		Damage = bCriticalHit ? Damage*2.0f + CritHitDamageVal : Damage;
+	}
 
 	// use AttributeSet::GetIncomingDamageAttribute() to get incoming damage meta attribute.
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);

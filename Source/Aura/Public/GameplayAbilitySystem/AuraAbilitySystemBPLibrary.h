@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemBPLibrary.generated.h"
 
+class UCharacterClassInfo;
 enum class ECharacterClass : uint8;
 class UAuraAttributeMenuWC;
 class UAuraOverlayWidgetController;
@@ -38,6 +39,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|CharacterClassDefaults")
 	static void GiveCommonAbilities(const UObject* WorldContext, UAbilitySystemComponent* ASC);
+
+	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContext);
 
 private:
 	static void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC);

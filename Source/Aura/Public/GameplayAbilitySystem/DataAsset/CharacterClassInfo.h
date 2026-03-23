@@ -56,4 +56,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Common Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Common Abilities")
+	TObjectPtr<UCurveTable> DamageCalculationCoefficients;
 };

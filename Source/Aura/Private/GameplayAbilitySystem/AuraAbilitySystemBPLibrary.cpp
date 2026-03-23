@@ -81,6 +81,13 @@ void UAuraAbilitySystemBPLibrary::GiveCommonAbilities(const UObject* WorldContex
 	
 }
 
+UCharacterClassInfo* UAuraAbilitySystemBPLibrary::GetCharacterClassInfo(const UObject* WorldContext)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContext));
+	if (AuraGameMode == nullptr) return nullptr;
+	return AuraGameMode->CharacterClassInfo;
+}
+
 void UAuraAbilitySystemBPLibrary::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC)
 {
 	// Hence MMC is using source object from context handle we have to define that in here too.
