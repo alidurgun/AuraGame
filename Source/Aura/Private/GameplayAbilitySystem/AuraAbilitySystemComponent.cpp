@@ -4,7 +4,6 @@
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "GameplayAbilitySystem/GameplayAbilities/AuraGameplayAbility.h"
-#include "GameplayAbilitySystem/GameplayAbilities/AuraGameplayAbility.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -43,12 +42,11 @@ void UAuraAbilitySystemComponent::AddCharacterAbilites(const TArray<TSubclassOf<
 
 void UAuraAbilitySystemComponent::AbilityInputTagPressed(FGameplayTag Tag)
 {
-}
+	if (!Tag.IsValid() || !AbilityActorInfo->IsLocallyControlled()) return;
 
-void UAuraAbilitySystemComponent::AbilityInputTagHeld(FGameplayTag Tag)
-{
-	if (!Tag.IsValid()) return;
-
+	UE_LOG(LogTemp, Warning, TEXT("AbilityInputTagPressed called for tag: %s at time: %f"), 
+		*Tag.ToString(), GetWorld()->GetTimeSeconds());
+	
 	for (auto ActivatableAbility : GetActivatableAbilities())
 	{
 		if (ActivatableAbility.DynamicAbilityTags.HasTagExact(Tag))
@@ -57,12 +55,18 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(FGameplayTag Tag)
 			AbilitySpecInputPressed(ActivatableAbility);
 			if (!ActivatableAbility.IsActive())
 			{
-				TryActivateAbility(ActivatableAbility.Handle);
 				// Don't manually activate it directly. Maybe some other ability or status can prevent
 				// this ability to be active. Therefore, use TryActivateAbility.
+				TryActivateAbility(ActivatableAbility.Handle);
 			}
+			break;
 		}
 	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagHeld(FGameplayTag Tag)
+{
+	
 }
 
 void UAuraAbilitySystemComponent::AbilityInputTagReleased(FGameplayTag Tag)
@@ -75,6 +79,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(FGameplayTag Tag)
 		{
 			AbilitySpecInputReleased(ActivatableAbility);
 			// Don't cancel the ability yet. Maybe it will be canceled later. (For ex: When it reach to target)
+			break;
 		}
 	}
 }

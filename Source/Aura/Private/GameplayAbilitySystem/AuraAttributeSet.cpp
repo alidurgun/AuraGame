@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
+#include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 #include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -216,7 +217,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 				// Player index 0 will give locally controlled player. For server => server, For client=> client
 				if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter,0)))
 				{
-					PC->ShowDamageComponent(LocalIncomingDamage, Props.TargetCharacter);
+					PC->ShowDamageComponent(
+						LocalIncomingDamage,
+						Props.TargetCharacter,
+						UAuraAbilitySystemBPLibrary::IsBlockedHit(Props.GameplayEffectContextHandle),
+						UAuraAbilitySystemBPLibrary::IsCriticalHit(Props.GameplayEffectContextHandle));
 				}
 			}
 		}

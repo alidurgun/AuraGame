@@ -15,6 +15,10 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ActivateAbility called at time: %f - Ability: %s - Role: %d"), 
+		GetWorld()->GetTimeSeconds(), 
+		*GetName(), 
+		GetActorInfo().OwnerActor->GetLocalRole());
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -66,6 +70,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		// End Give the projectile a gameplay effect spec for causing damage.
 
+		UE_LOG(LogTemp, Warning, TEXT("HasAuthority: %d"), GetAvatarActorFromActorInfo()->HasAuthority());
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }

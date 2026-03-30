@@ -129,6 +129,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const bool bAttackBlocked = FMath::RandRange(1,100) <= BlockChanceValue;
 	Damage = bAttackBlocked ? Damage/2.0f : Damage;
 
+	FGameplayEffectContextHandle EffectContextHandle = GESpec.GetContext();
+	UAuraAbilitySystemBPLibrary::SetBlockedHit(EffectContextHandle, bAttackBlocked);
+
 	// If attack is not blocked then crit can occur. Calculate crit chance and implement the crit logic.
 	if (!bAttackBlocked)
 	{
@@ -141,8 +144,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitDamageDef, EvaluateParams, CritHitDamageVal);
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().CriticalHitResistanceDef, EvaluateParams, CritHitResVal);
 		
-		CritHitChanceVal *= 1.5f - (CritHitResVal * 0.85f);
+		CritHitChanceVal -=  (CritHitResVal * 0.85f);
 		const bool bCriticalHit = FMath::RandRange(1,100) <= CritHitChanceVal;
+
+		UAuraAbilitySystemBPLibrary::SetCriticalHit(EffectContextHandle, bCriticalHit);
 
 		Damage = bCriticalHit ? Damage*2.0f + CritHitDamageVal : Damage;
 	}

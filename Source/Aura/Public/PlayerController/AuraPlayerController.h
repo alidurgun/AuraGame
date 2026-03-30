@@ -45,7 +45,7 @@ public:
 	 * @param[1] in TargetCharacter => Which character should have this damage component to display.
 	 */
 	UFUNCTION(Client, Reliable)
-	void ShowDamageComponent(float Damage, ACharacter* TargetCharacter);
+	void ShowDamageComponent(float Damage, ACharacter* TargetCharacter, bool IsBlocked, bool IsCrit);
 
 protected:
 	virtual void BeginPlay() override;

@@ -117,7 +117,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag Tag)
 	}
 }
 
-void AAuraPlayerController::ShowDamageComponent_Implementation(float Damage, ACharacter* TargetCharacter)
+void AAuraPlayerController::ShowDamageComponent_Implementation(float Damage, ACharacter* TargetCharacter, bool IsBlocked, bool IsCrit)
 {
 	// IsValid is checking the input parameter is null or not. In addition to that it will also check the
 	// if the parameter is pending to kill. Therefore, we have used IsValid for the TargetCharacter.
@@ -138,7 +138,7 @@ void AAuraPlayerController::ShowDamageComponent_Implementation(float Damage, ACh
 		// Detach it because it will play an animation, and we do not need to keep that on the component.
 		DamageText->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 
-		DamageText->SetDamageText(Damage);
+		DamageText->SetDamageText(Damage, IsBlocked, IsCrit);
 	}
 }
 

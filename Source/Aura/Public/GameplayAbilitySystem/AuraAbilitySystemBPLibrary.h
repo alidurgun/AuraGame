@@ -42,6 +42,18 @@ public:
 
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContext);
 
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|DamageRelated")
+	static bool IsBlockedHit(const FGameplayEffectContextHandle& ContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|DamageRelated")
+	static bool IsCriticalHit(const FGameplayEffectContextHandle& ContextHandle);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|DamageRelated")
+	static void SetBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, const bool IsInBlock);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|DamageRelated")
+	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, const bool IsInCrit);
+
 private:
 	static void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC);
 };
