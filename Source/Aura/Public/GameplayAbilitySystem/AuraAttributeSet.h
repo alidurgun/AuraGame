@@ -135,6 +135,20 @@ public:
 	FGameplayAttributeData MaxMana;
 	// !Secondary Attributes
 
+	// Damage Type Resistance Attributes
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_ArcaneResistance, Category="Resistance Attributes")
+	FGameplayAttributeData ArcaneResistance;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_FireResistance, Category="Resistance Attributes")
+	FGameplayAttributeData FireResistance;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_LightningResistance, Category="Resistance Attributes")
+	FGameplayAttributeData LightningResistance;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_PhysicalResistance, Category="Resistance Attributes")
+	FGameplayAttributeData PhysicalResistance;
+	// !Damage Type Resistance Attributes
+
 	// Meta Attributes
 	// Meta Attributes will not be replicated therefore no ReplicatedUsing for Meta Attributes.
 	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
@@ -165,6 +179,13 @@ public:
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth);
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
 	// !Secondary Attribute Accessors
+
+	// Damage Type Resistances
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArcaneResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, FireResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LightningResistance);
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance);
+	// !Damage Type Resistances
 
 	// Meta Attributes
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
@@ -223,6 +244,20 @@ public:
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
 	// Secondary Attribute Callback Functions
+
+	// Damage Type Resistances Callback Functions
+	UFUNCTION()
+	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const;
+
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;
+
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const;
+
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;
+	// !Damage Type Resistances Callback Functions
 
 	/* This function will be called everytime before any attribute has changed.
 	 * @param[0] Attribute => Actual attribute that will be changed.

@@ -54,6 +54,23 @@ public:
 	FGameplayTag Ability_FireBolt_Damage;
 	/* End Ability Damage Tags */
 
+	/* Ability Damage Types */
+	FGameplayTag DamageTypes_Arcane;
+	FGameplayTag DamageTypes_Fire;
+	FGameplayTag DamageTypes_Lightning;
+	FGameplayTag DamageTypes_Physical;
+	/* End Ability Damage Types */
+
+	/* Ability Damage Resistances */
+	FGameplayTag Attributes_Resistance_Arcane;
+	FGameplayTag Attributes_Resistance_Fire;
+	FGameplayTag Attributes_Resistance_Lightning;
+	FGameplayTag Attributes_Resistance_Physical;
+	/* End Ability Damage Resistances */
+
+	// By using TMap we can associate all resistances with the damage types.
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
+
 	/* Hit React Tags */
 	FGameplayTag HitReact;
 	/* End Hit React Tags */

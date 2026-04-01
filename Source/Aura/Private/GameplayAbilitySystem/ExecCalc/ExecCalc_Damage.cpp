@@ -91,7 +91,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
  * param[2] => Default value for the tag when the tag is not found. (0)
  */
 	float Damage = GESpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Ability_FireBolt_Damage);
-
 	float ArmorValue{0.0f};
 	float ArmorPenetrationValue{0.0f};
 
@@ -112,6 +111,18 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Get the coefficients for current levels.
 	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
 	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
+	
+	// Damage type related calculations.
+	for (const auto& Pair: FAuraGameplayTags::Get().DamageTypesToResistances)
+	{
+		// Calculate damage type bonus.
+		const float DamageTypeValue = GESpec.GetSetByCallerMagnitude(Pair.Key);
+		Damage += DamageTypeValue;
+
+		// Calculate damage resistance value.
+		const float DamageTypeResistance = GESpec.GetSetByCallerMagnitude(Pair.Value);
+		Damage -= DamageTypeResistance;
+	}
 
 	// Calculation relevant with Armor Penetration and Armor
 	const float EffectiveArmor = ArmorValue * (100-ArmorPenetrationValue * ArmorPenetrationCoefficient) / 100.0f;

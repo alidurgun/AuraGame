@@ -41,7 +41,4 @@ public:
 	// Default tag for the starting ability. Startup ability will be associated with this tag.
 	UPROPERTY(EditAnywhere)
 	FGameplayTag StartupAbilityTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Ability Damage")
-	FScalableFloat Damage; // This will be showed as CT in the Editor Side.
 };
