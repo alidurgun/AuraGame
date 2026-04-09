@@ -25,7 +25,8 @@ void AAuraEffectActor::BeginPlay()
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-
+	// Hence all enemies have this tag we can check it.
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bCanEnemyInteract) return;
 	checkf(GameplayEffectClass, TEXT("AuraEffectActor should have valid GameplayEffect class to apply effect."));
 	
 	// UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent is a function that do cast and other
@@ -66,11 +67,18 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 			// Store it for remove it in the onendoverlap function.
 			ActiveGameplayEffects.Add(GameplayEffectHandle, TargetAsc);
 		}
+
+		if (GESpecHandle.Data.Get()->Def.Get()->DurationPolicy != EGameplayEffectDurationType::Infinite)
+		{
+			Destroy();
+		}
 	}
+	
 }
 
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bCanEnemyInteract) return;
 	/*
 	 * Multiple effects can be applied at the same time.
 	 */
@@ -90,6 +98,7 @@ void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bCanEnemyInteract) return;
 	/*
 	* Multiple effects can be applied at the same time.
 	*/

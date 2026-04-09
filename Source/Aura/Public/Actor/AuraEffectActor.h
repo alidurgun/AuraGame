@@ -75,6 +75,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="GAS|Gameplay Effects")
 	float ActorLevel{ 1.0f };
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
+	bool bCanEnemyInteract = false;
+
 private:
 	/* This map will fill with information of infinite GameplayEffect and targeted ASC. */
 	UPROPERTY()
