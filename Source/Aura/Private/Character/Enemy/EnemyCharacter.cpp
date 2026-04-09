@@ -4,6 +4,9 @@
 #include "Character/Enemy/EnemyCharacter.h"
 
 
+#include "AI/Controller/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -63,6 +66,21 @@ void AEnemyCharacter::Die()
 {
 	SetLifeSpan(LifeSpan);
 	Super::Die();
+}
+
+void AEnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!HasAuthority()) return;
+	// Enemy must use the custom AIController.
+	// Create a BP from AuraAIController and set it as an AI Controller Class in BP_Enemy.
+	AuraAIController = Cast<AAuraAIController>(NewController);
+
+	// To run the BehaviorTree PossessedBy function is a perfect place.
+	// Create a BehaviorTree BP too and set it as BehaviorTree in the enemy section.
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree); // To run the behavior tree.
 }
 
 void AEnemyCharacter::BeginPlay()

@@ -9,6 +9,8 @@
 #include "UI/WidgetController/AuraOverlayWidgetController.h"
 #include "EnemyCharacter.generated.h"
 
+class AAuraAIController;
+class UBehaviorTree;
 class UWidgetComponent;
 /**
  * 
@@ -41,6 +43,9 @@ public:
 
 	virtual void Die() override;
 
+	// Override the PossessedBy function to get the AIController.
+	virtual void PossessedBy(AController* NewController) override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -57,6 +62,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;
 
+	UPROPERTY(EditAnywhere, Category="AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AAuraAIController> AuraAIController;
 private:
 	float BaseWalkSpeed{250.0f};
 
