@@ -65,6 +65,8 @@ void AEnemyCharacter::EnemyHitReaction(const FGameplayTag Tag, int32 NewTagCount
 	bHitReacting = NewTagCount > 0;
 
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.0f : BaseWalkSpeed;
+
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReact"), bHitReacting);
 }
 
 void AEnemyCharacter::Die()
@@ -86,6 +88,10 @@ void AEnemyCharacter::PossessedBy(AController* NewController)
 	// Create a BehaviorTree BP too and set it as BehaviorTree in the enemy section.
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	AuraAIController->RunBehaviorTree(BehaviorTree); // To run the behavior tree.
+
+	// Set the hitreact and ranger values in here.
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReact"), false);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangeAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
 void AEnemyCharacter::BeginPlay()
