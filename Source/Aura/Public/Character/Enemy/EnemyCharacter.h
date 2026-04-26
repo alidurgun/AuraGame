@@ -46,6 +46,12 @@ public:
 	// Override the PossessedBy function to get the AIController.
 	virtual void PossessedBy(AController* NewController) override;
 
+	UPROPERTY(BlueprintReadWrite, Category="Combat")
+	TObjectPtr<AActor> CombatTarget;
+
+	virtual void SetCombatTarget_Implementation(AActor* CombatTargetIn) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
+
 protected:
 	virtual void BeginPlay() override;
 

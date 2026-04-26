@@ -94,6 +94,16 @@ void AEnemyCharacter::PossessedBy(AController* NewController)
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangeAttacker"), CharacterClass != ECharacterClass::Warrior);
 }
 
+void AEnemyCharacter::SetCombatTarget_Implementation(AActor* CombatTargetIn)
+{
+	CombatTarget = CombatTargetIn;
+}
+
+AActor* AEnemyCharacter::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();

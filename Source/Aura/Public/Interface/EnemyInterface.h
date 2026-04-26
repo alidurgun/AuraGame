@@ -24,4 +24,12 @@ class AURA_API IEnemyInterface
 public:
 	virtual void Highlight() = 0;
 	virtual void Unhighlight() = 0;
+
+	/* Set Current target for the enemy, then enemy will warp to this target. */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCombatTarget(AActor* CombatTargetIn);
+
+	/* Get Current target for the enemy, enemy will warp to this target. */
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AActor* GetCombatTarget() const;
 };
