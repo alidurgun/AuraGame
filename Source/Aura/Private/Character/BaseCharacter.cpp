@@ -32,7 +32,7 @@ UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-const FVector ABaseCharacter::GetCombatSocketLocation() const
+const FVector ABaseCharacter::GetCombatSocketLocation_Implementation() const
 {
 	check(WeaponMesh)
 	return WeaponMesh->GetSocketLocation(WeaponTipSocketName);

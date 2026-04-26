@@ -26,7 +26,7 @@ public:
 
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
-	virtual const FVector GetCombatSocketLocation() const override;
+	virtual const FVector GetCombatSocketLocation_Implementation() const override;
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
