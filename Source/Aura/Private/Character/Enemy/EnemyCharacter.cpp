@@ -100,7 +100,7 @@ void AEnemyCharacter::BeginPlay()
 
 	// Hence Ability System Control has been bound to pawn directly, set its owner and avatar in BeginPlay
 	InitAbilityComponent();
-	UAuraAbilitySystemBPLibrary::GiveCommonAbilities(this,AbilitySystemComponent);
+	UAuraAbilitySystemBPLibrary::GiveCommonAbilities(this,AbilitySystemComponent, CharacterClass);
 
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{

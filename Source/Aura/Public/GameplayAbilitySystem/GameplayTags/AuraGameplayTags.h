@@ -75,6 +75,10 @@ public:
 	FGameplayTag HitReact;
 	/* End Hit React Tags */
 
+	/* Abilities Tags */
+	FGameplayTag Abilities_MeleeAttack;
+	/* End Abilities Tags */
+
 private:
 	static FAuraGameplayTags instance;
 };

@@ -8,6 +8,7 @@
 #include "GameMode/AuraGameModeBase.h"
 #include "GameplayAbilitySystem/AuraAttributeSet.h"
 #include "GameplayAbilitySystem/DataAsset/CharacterClassInfo.h"
+#include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerState/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -65,7 +66,7 @@ void UAuraAbilitySystemBPLibrary::InitializeDefaultAttributes(const UObject* Wor
 	ApplyEffectToSelf(CharClassInfo->VitalAttributes, Level, ASC);
 }
 
-void UAuraAbilitySystemBPLibrary::GiveCommonAbilities(const UObject* WorldContext, UAbilitySystemComponent* ASC)
+void UAuraAbilitySystemBPLibrary::GiveCommonAbilities(const UObject* WorldContext, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
 {
 	// first get the AAuraGameModeBase.
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContext));
@@ -79,7 +80,19 @@ void UAuraAbilitySystemBPLibrary::GiveCommonAbilities(const UObject* WorldContex
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,1);
 		ASC->GiveAbility(AbilitySpec);
 	}
-	
+
+	// Give startup abilities
+	FCharacterClassDefaultInfo DefaultInfo = CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);
+	for (auto abilities : DefaultInfo.StartupAbilities)
+	{
+		// Hence the enemies will have different level during the game. We need a CombatInterface to get the
+		// player level to give ability in correct level.
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor()))
+		{
+			FGameplayAbilitySpec spec = FGameplayAbilitySpec(abilities, CombatInterface->GetPlayerLevel());
+			ASC->GiveAbility(spec);
+		}
+	}
 }
 
 UCharacterClassInfo* UAuraAbilitySystemBPLibrary::GetCharacterClassInfo(const UObject* WorldContext)

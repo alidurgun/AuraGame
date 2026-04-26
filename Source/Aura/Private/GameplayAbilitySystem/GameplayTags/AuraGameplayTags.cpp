@@ -149,4 +149,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Effects.HitReact"),
 		FString("Effect for Hit Reaction"));
 	/* End Hit React Tags Initialization */
+
+	/* Abilities Tags Initialization */
+	instance.Abilities_MeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.MeleeAttack"),
+		FString("Melee Attack Ability Tag"));
+	/* End Abilities Tags Initialization */
 }
