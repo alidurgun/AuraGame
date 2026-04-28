@@ -54,6 +54,15 @@ public:
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|DamageRelated")
 	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, const bool IsInCrit);
 
+	/* Function to get all alive players within the given radius.
+	 * param[0] input => WorldContextObject for static functions.
+	 * param[1] output => LiveActors, this will fill inside of the function with all alive players inside of this radius.
+	 * param[2] input => Actors to ignore while calculating the alive actors.
+	 * param[3] input => radius to calculate actors given from this radius.
+	 * param[4] input => Sphere origin to specify location for this sphere.
+	 */
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|CombatMechanics")
+	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& LiveActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
 private:
 	static void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC);
 };

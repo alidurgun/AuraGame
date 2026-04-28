@@ -25,6 +25,8 @@ ABaseCharacter::ABaseCharacter()
 	WeaponMesh->SetupAttachment(GetMesh(), TEXT("WeaponSocket"));
 
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	IsAlive = true;
 }
 
 UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
@@ -48,6 +50,16 @@ void ABaseCharacter::Die()
 	// detach weapon from the character.
 	WeaponMesh->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	MulticastHandleDeath_Implementation();
+}
+
+bool ABaseCharacter::IsAlive_Implementation() const
+{
+	return IsAlive;
+}
+
+AActor* ABaseCharacter::GetAvatar_Implementation()
+{
+	return this;
 }
 
 void ABaseCharacter::Dissolve()
@@ -86,6 +98,8 @@ void ABaseCharacter::MulticastHandleDeath_Implementation()
 
 	// Call Dissolve for both client and server.
 	Dissolve();
+
+	IsAlive = false;
 }
 
 void ABaseCharacter::InitAbilityComponent()

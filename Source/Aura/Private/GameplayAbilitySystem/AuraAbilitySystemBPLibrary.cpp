@@ -136,6 +136,32 @@ void UAuraAbilitySystemBPLibrary::SetCriticalHit(FGameplayEffectContextHandle& C
 	}
 }
 
+void UAuraAbilitySystemBPLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
+	TArray<AActor*>& LiveActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin)
+{
+	// Copied from the ApplyRadialDamageWithFalloff function. Hence it is doing similar work.
+	FCollisionQueryParams SphereParams = FCollisionQueryParams();
+	SphereParams.AddIgnoredActors(ActorsToIgnore);
+
+	// query scene to see what we hit
+	TArray<FOverlapResult> Overlaps;
+	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		World->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), FCollisionShape::MakeSphere(Radius), SphereParams);
+
+		// loop through each overlapped result
+		for (FOverlapResult overlap : Overlaps)
+		{
+			// if this overlap result implements CombatInterface and if the actor is still alive.
+			if (overlap.GetActor()->Implements<UCombatInterface>() && ICombatInterface::Execute_IsAlive(overlap.GetActor()))
+			{
+				LiveActors.AddUnique(ICombatInterface::Execute_GetAvatar(overlap.GetActor()));
+			}
+		}
+	}
+	// Copied from the ApplyRadialDamageWithFalloff function. Hence it is doing similar work.
+}
+
 void UAuraAbilitySystemBPLibrary::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC)
 {
 	// Hence MMC is using source object from context handle we have to define that in here too.

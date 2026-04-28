@@ -32,6 +32,12 @@ public:
 
 	virtual void Die() override;
 
+	/* To get whether the current actor is alive or not! */
+	virtual bool IsAlive_Implementation() const override;
+
+	// To get the current actor.
+	virtual AActor* GetAvatar_Implementation() override;
+
 	// Function to create a dynamic material instance. Then it will call the dissolvetimeline functions for body
 	// and weapon to make them dissolve in time.
 	void Dissolve();
@@ -91,4 +97,6 @@ private:
 
 	UPROPERTY(EditAnywhere, meta=(AllowPrivateAccess = "true"), Category="Dissolve")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterial;
+
+	bool IsAlive;
 };
