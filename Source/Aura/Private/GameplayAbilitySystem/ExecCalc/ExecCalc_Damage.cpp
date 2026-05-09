@@ -114,13 +114,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateParams.SourceTags = SourceTags;
 	EvaluateParams.TargetTags = TargetTags;
 
-	/*
- * GetSetByCallerMagnitude function can have 3 parameters 2 of them is optional
- * param[0] => name of the tag
- * param[1] => to enable warning if given tag is not found. (true)
- * param[2] => Default value for the tag when the tag is not found. (0)
- */
-	float Damage = GESpec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Ability_FireBolt_Damage);
+
 	float ArmorValue{0.0f};
 	float ArmorPenetrationValue{0.0f};
 
@@ -141,22 +135,28 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Get the coefficients for current levels.
 	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(SourceCombatInterface->GetPlayerLevel());
 	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetPlayerLevel());
-	
+	float Damage{0.0f};
 	// Damage type related calculations.
 	for (const auto& Pair: FAuraGameplayTags::Get().DamageTypesToResistances)
 	{
 		checkf(AuraDamageStatics().TagsToCaptureDefs.Contains(Pair.Value),
 			TEXT("TagsToCaptureDefs does not contains [%s]"), *Pair.Value.ToString());
 		FGameplayEffectAttributeCaptureDefinition ResistanceDef = AuraDamageStatics().TagsToCaptureDefs[Pair.Value];
-		
+
+		/*
+		* GetSetByCallerMagnitude function can have 3 parameters 2 of them is optional
+		* param[0] => name of the tag
+		* param[1] => to enable warning if given tag is not found. (true)
+		* param[2] => Default value for the tag when the tag is not found. (0)
+		*/
 		// Calculate damage type bonus.
 		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(Pair.Key);
-
+		
 		// Calculate damage resistance value.
 		float Resistance { 0.0f };
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(ResistanceDef, EvaluateParams, Resistance);
 
-		DamageTypeValue *= (100.0f - Resistance) /100.0f;
+		DamageTypeValue *= ( 100.f - Resistance ) / 100.f;
 		
 		Damage += DamageTypeValue;
 	}

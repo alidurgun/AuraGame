@@ -248,10 +248,18 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			if (Props.SourceCharacter != Props.TargetCharacter)
 			{
 				// Player index 0 will give locally controlled player. For server => server, For client=> client
-				if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter,0)))
+				if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
 				{
 					PC->ShowDamageComponent(
 						LocalIncomingDamage,
+						Props.TargetCharacter,
+						UAuraAbilitySystemBPLibrary::IsBlockedHit(Props.GameplayEffectContextHandle),
+						UAuraAbilitySystemBPLibrary::IsCriticalHit(Props.GameplayEffectContextHandle));
+				}
+
+				else if (AAuraPlayerController* PCC = Cast<AAuraPlayerController>(Props.TargetCharacter->Controller))
+				{
+					PCC->ShowDamageComponent(LocalIncomingDamage,
 						Props.TargetCharacter,
 						UAuraAbilitySystemBPLibrary::IsBlockedHit(Props.GameplayEffectContextHandle),
 						UAuraAbilitySystemBPLibrary::IsCriticalHit(Props.GameplayEffectContextHandle));
