@@ -155,4 +155,18 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.MeleeAttack"),
 		FString("Melee Attack Ability Tag"));
 	/* End Abilities Tags Initialization */
+
+	/* Montage Tags Initialization */
+	instance.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.Weapon"),
+		FString("Attack montages for performing with weapons"));
+
+	instance.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightHand"),
+		FString("Attack montages for performing with right hand"));
+
+	instance.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftHand"),
+		FString("Attack montages for performing with left hand"));
+	/* End Montage Tags Initialization */
 }

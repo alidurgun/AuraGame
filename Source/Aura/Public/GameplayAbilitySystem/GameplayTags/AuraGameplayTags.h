@@ -79,6 +79,12 @@ public:
 	FGameplayTag Abilities_MeleeAttack;
 	/* End Abilities Tags */
 
+	/* Montage Tags */
+	FGameplayTag Montage_Attack_Weapon; // Attacking with weapon.
+	FGameplayTag Montage_Attack_RightHand; // Attacking with right hand.
+	FGameplayTag Montage_Attack_LeftHand; // Attacking with left hand.
+	/* End Montage Tags */
+
 private:
 	static FAuraGameplayTags instance;
 };

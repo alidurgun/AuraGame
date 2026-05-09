@@ -79,6 +79,11 @@ void ABaseCharacter::Dissolve()
 
 }
 
+TArray<FTaggedMontage> ABaseCharacter::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
+}
+
 void ABaseCharacter::MulticastHandleDeath_Implementation()
 {
 	// To make weapon fell down and interact with the ground.

@@ -49,6 +49,8 @@ public:
 	// Weapon dissolve function. It will work with a timeline.
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeaponDissolveTimeline(UMaterialInstanceDynamic* WeaponDissolve);
+
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	
 protected:	
 	UPROPERTY(EditAnywhere, Category="Combat")
@@ -99,4 +101,7 @@ private:
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterial;
 
 	bool IsAlive;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TArray<FTaggedMontage> AttackMontages;
 };
