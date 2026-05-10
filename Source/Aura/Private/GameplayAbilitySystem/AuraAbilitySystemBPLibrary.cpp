@@ -162,6 +162,13 @@ void UAuraAbilitySystemBPLibrary::GetLivePlayersWithinRadius(const UObject* Worl
 	// Copied from the ApplyRadialDamageWithFalloff function. Hence it is doing similar work.
 }
 
+bool UAuraAbilitySystemBPLibrary::IsFriend(AActor* FirstActor, AActor* SecondActor)
+{
+	const bool bBothArePlayers = FirstActor->ActorHasTag("Player") && SecondActor->ActorHasTag("Player");
+	const bool bBothAreEnemies = FirstActor->ActorHasTag("Enemy") && SecondActor->ActorHasTag("Enemy");
+	return bBothAreEnemies || bBothArePlayers;
+}
+
 void UAuraAbilitySystemBPLibrary::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC)
 {
 	// Hence MMC is using source object from context handle we have to define that in here too.

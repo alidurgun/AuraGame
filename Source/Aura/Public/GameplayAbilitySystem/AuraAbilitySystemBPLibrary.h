@@ -63,6 +63,10 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|CombatMechanics")
 	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& LiveActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|GameplayMechanics")
+	static bool IsFriend(AActor* FirstActor, AActor* SecondActor);
+
 private:
 	static void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, int32 Level, UAbilitySystemComponent* ASC);
 };

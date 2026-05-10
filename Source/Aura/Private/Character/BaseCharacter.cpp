@@ -7,6 +7,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "GameplayAbilitySystem/AuraAbilitySystemComponent.h"
+#include "GameplayAbilitySystem/GameplayTags/AuraGameplayTags.h"
 #include "GeometryCollection/GeometryCollectionParticlesData.h"
 
 // Sets default values
@@ -34,10 +35,25 @@ UAbilitySystemComponent* ABaseCharacter::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-const FVector ABaseCharacter::GetCombatSocketLocation_Implementation() const
+const FVector ABaseCharacter::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const
 {
-	check(WeaponMesh)
-	return WeaponMesh->GetSocketLocation(WeaponTipSocketName);
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	FVector RetVal = FVector::ZeroVector;
+	if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_Weapon) && IsValid(WeaponMesh))
+	{
+		RetVal = WeaponMesh->GetSocketLocation(WeaponTipSocketName);
+	}
+
+	else if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_LeftHand))
+	{
+		RetVal = GetMesh()->GetSocketLocation(LeftHandSocketName);
+	}
+
+	else if (MontageTag.MatchesTagExact(GameplayTags.Montage_Attack_RightHand))
+	{
+		RetVal = GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+	return RetVal;
 }
 
 UAnimMontage* ABaseCharacter::GetHitReactMontage_Implementation()

@@ -26,7 +26,7 @@ public:
 
 	FORCEINLINE UAttributeSet* GetAttributeSet() const { return AttributeSet; }
 
-	virtual const FVector GetCombatSocketLocation_Implementation() const override;
+	virtual const FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
@@ -58,6 +58,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponTipSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName LeftHandSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName RightHandSocketName;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

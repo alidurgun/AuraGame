@@ -45,7 +45,7 @@ public:
 	
 	// To get the location for the tip of the weapon.
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	const FVector GetCombatSocketLocation() const;
+	const FVector GetCombatSocketLocation(const FGameplayTag& MontageTag) const;
 
 	// When we use BlueprintImplementableEvent we don't use virtual keyword.
 	// It will show as "Event Update Facing Target" in BP side.(BlueprintImplementableEvent used)

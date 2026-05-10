@@ -74,6 +74,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AAuraAIController> AuraAIController;
 private:
+	UPROPERTY(EditAnywhere, Category="Combat")
 	float BaseWalkSpeed{250.0f};
 
 	bool bHitReacting{false};
