@@ -11,6 +11,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
+#include "GameplayAbilitySystem/AuraAbilitySystemBPLibrary.h"
 
 // Sets default values
 AAuraProjectile::AAuraProjectile()
@@ -47,13 +48,24 @@ void AAuraProjectile::CreateExplosion()
 {
 	UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation());
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactEffect,GetActorLocation());
-	TrailSoundComponent->Stop();
+	if (TrailSoundComponent)
+	{
+		TrailSoundComponent->Stop();
+	}
 }
 
 void AAuraProjectile::SphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
                                          AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
                                          bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (DamageEffectSpecHandle.Data.IsValid() && DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor)
+	{
+		return;
+	}
+	if (UAuraAbilitySystemBPLibrary::IsFriend(DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser(), OtherActor))
+	{
+		return;
+	}
 	CreateExplosion();
 
 	// only server can destroy it.
