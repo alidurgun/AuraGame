@@ -71,6 +71,7 @@ void AEnemyCharacter::EnemyHitReaction(const FGameplayTag Tag, int32 NewTagCount
 
 void AEnemyCharacter::Die()
 {
+	if (AuraAIController) AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsDead", true);
 	SetLifeSpan(LifeSpan);
 	Super::Die();
 }
@@ -92,6 +93,8 @@ void AEnemyCharacter::PossessedBy(AController* NewController)
 	// Set the hitreact and ranger values in here.
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReact"), false);
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("RangeAttacker"), CharacterClass != ECharacterClass::Warrior);
+
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("IsDead"), false);
 }
 
 void AEnemyCharacter::SetCombatTarget_Implementation(AActor* CombatTargetIn)
