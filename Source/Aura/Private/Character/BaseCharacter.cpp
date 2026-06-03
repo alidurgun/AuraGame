@@ -100,6 +100,11 @@ TArray<FTaggedMontage> ABaseCharacter::GetAttackMontages_Implementation()
 	return AttackMontages;
 }
 
+UNiagaraSystem* ABaseCharacter::GetBloodEffect_Implementation()
+{
+	return BloodEffect;
+}
+
 void ABaseCharacter::MulticastHandleDeath_Implementation()
 {
 	// To make weapon fell down and interact with the ground.
