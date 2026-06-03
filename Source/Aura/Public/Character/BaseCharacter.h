@@ -8,6 +8,7 @@
 #include "Interface/CombatInterface.h"
 #include "BaseCharacter.generated.h"
 
+class UNiagaraSystem;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAbilitySystemComponent;
@@ -51,6 +52,8 @@ public:
 	void WeaponDissolveTimeline(UMaterialInstanceDynamic* WeaponDissolve);
 
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	
 protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
@@ -86,6 +89,9 @@ protected:
 	virtual void InitializeDefaultValues() const;
 
 	void AddCharacterAbilities() const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	UNiagaraSystem* BloodEffect;
 
 private:
 	/* Apply given Gameplay Effect class to the self for given level. */
