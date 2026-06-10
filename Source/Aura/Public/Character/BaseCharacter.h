@@ -55,6 +55,8 @@ public:
 
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	
+	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
+	
 protected:	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
@@ -67,6 +69,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName RightHandSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName TailSocketName;
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

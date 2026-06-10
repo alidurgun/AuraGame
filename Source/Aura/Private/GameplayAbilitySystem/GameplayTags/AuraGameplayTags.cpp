@@ -157,16 +157,38 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* End Abilities Tags Initialization */
 
 	/* Montage Tags Initialization */
-	instance.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.Weapon"),
-		FString("Attack montages for performing with weapons"));
+	instance.Montage_Attack_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.1"),
+		FString("Attack montages number 1"));
 
-	instance.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.RightHand"),
-		FString("Attack montages for performing with right hand"));
+	instance.Montage_Attack_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.2"),
+		FString("Attack montages number 2"));
 
-	instance.Montage_Attack_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.LeftHand"),
-		FString("Attack montages for performing with left hand"));
+	instance.Montage_Attack_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.3"),
+		FString("Attack montages number 3"));
+
+	instance.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Montage.Attack.4"),
+	FString("Attack montages number 4"));
 	/* End Montage Tags Initialization */
+
+	/* Combat Socket Tags initialization*/
+	instance.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("CombatSocket.Weapon"),
+		FString("Combat socket location for weapon"));
+
+	instance.CombatSocket_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("CombatSocket.LeftHand"),
+		FString("Combat socket location for left hand"));
+
+	instance.CombatSocket_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("CombatSocket.RightHand"),
+		FString("Combat socket location for right hand"));
+
+	instance.CombatSocket_Tail = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("CombatSocket.Tail"),
+		FString("Combat socket location for tail"));
+	/* End Combat Socket Tags initialization*/
 }

@@ -26,7 +26,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
 	// only server can activate ability.
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	const FVector ProjectileSpawnLocation = ICombatInterface::Execute_GetCombatSocketLocation(
-		GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
+		GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
 
 	// TODO: Set the Projectile Rotation.
 	FRotator Rotation{(ProjectileLocation - ProjectileSpawnLocation).Rotation()};
