@@ -80,10 +80,19 @@ public:
 	/* End Abilities Tags */
 
 	/* Montage Tags */
-	FGameplayTag Montage_Attack_Weapon; // Attacking with weapon.
-	FGameplayTag Montage_Attack_RightHand; // Attacking with right hand.
-	FGameplayTag Montage_Attack_LeftHand; // Attacking with left hand.
+	/* Attack montages that our character can have */
+	FGameplayTag Montage_Attack_1;
+	FGameplayTag Montage_Attack_2;
+	FGameplayTag Montage_Attack_3;
+	FGameplayTag Montage_Attack_4;
 	/* End Montage Tags */
+
+	/* Socket Tags */
+	FGameplayTag CombatSocket_Weapon; // To get the socket location for weapon.
+	FGameplayTag CombatSocket_LeftHand; // To get the socket location for left hand.
+	FGameplayTag CombatSocket_RightHand; // To get the socket location for right hand.
+	FGameplayTag CombatSocket_Tail; // To get the socket location for tail.
+	/* End Socket Tags */
 
 private:
 	static FAuraGameplayTags instance;
