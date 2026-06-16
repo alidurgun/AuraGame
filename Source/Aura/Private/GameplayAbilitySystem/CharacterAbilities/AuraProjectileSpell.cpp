@@ -21,12 +21,12 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation)
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileLocation, const FGameplayTag& SocketTag)
 {
 	// only server can activate ability.
 	if (!GetAvatarActorFromActorInfo()->HasAuthority()) return;
 	const FVector ProjectileSpawnLocation = ICombatInterface::Execute_GetCombatSocketLocation(
-		GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
+		GetAvatarActorFromActorInfo(), SocketTag);
 
 	// TODO: Set the Projectile Rotation.
 	FRotator Rotation{(ProjectileLocation - ProjectileSpawnLocation).Rotation()};
