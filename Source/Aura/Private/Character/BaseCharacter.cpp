@@ -66,6 +66,16 @@ UAnimMontage* ABaseCharacter::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+int32 ABaseCharacter::GetMinionCount_Implementation()
+{
+	return MinionCount;
+}
+
+void ABaseCharacter::ModifyMinionCount_Implementation(int32 NewMinionCount)
+{
+	MinionCount += NewMinionCount;
+}
+
 void ABaseCharacter::Die()
 {
 	// detach weapon from the character.
