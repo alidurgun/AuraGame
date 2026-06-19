@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FVector> GetSpawnLocations();
 
+	UFUNCTION(BlueprintPure, Category="Summoning")
+	TSubclassOf<APawn> GetRandomSpawnClass(); 
+
 	// number of items going to be spawned.
 	UPROPERTY(EditDefaultsOnly, Category="Summoning")
 	int32 NumOfSpawned = 0;

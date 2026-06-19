@@ -26,16 +26,24 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocations()
 		const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
 
 		// This is randomized spawn location between min and max distance
-		const FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
+		FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance);
 
+		FHitResult HitResult;
+		GetWorld()->LineTraceSingleByChannel(HitResult, ChosenSpawnLocation + FVector(0.0f,0.0f,400.0f),
+			ChosenSpawnLocation - FVector(0.0f,0.0f,400.0f), ECC_Visibility);
+
+		if (HitResult.bBlockingHit)
+		{
+			ChosenSpawnLocation = HitResult.ImpactPoint;
+		}
 		SpawnLocations.Add(ChosenSpawnLocation);
-
-		// just debug spheres and arrows to see visualization of our algorithm.
-		DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 18.f, 12, FColor::Cyan, false, 3.f );
-		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + Direction * MaxSpawnDistance, 4.f, FLinearColor::Green, 3.f );
-		DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.f, 12, FColor::Red, false, 3.f );
-		DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.f, 12, FColor::Red, false, 3.f );
 	}
 
 	return SpawnLocations;
+}
+
+TSubclassOf<APawn> UAuraSummonAbility::GetRandomSpawnClass()
+{
+	const int32 selection = FMath::RandRange(0, SpawnedClasses.Num() - 1);
+	return SpawnedClasses[selection];
 }
