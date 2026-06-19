@@ -154,6 +154,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	instance.Abilities_MeleeAttack = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.MeleeAttack"),
 		FString("Melee Attack Ability Tag"));
+
+	instance.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Summon"),
+	FString("Summon Ability Tag"));
 	/* End Abilities Tags Initialization */
 
 	/* Montage Tags Initialization */

@@ -77,6 +77,7 @@ public:
 
 	/* Abilities Tags */
 	FGameplayTag Abilities_MeleeAttack;
+	FGameplayTag Abilities_Summon;
 	/* End Abilities Tags */
 
 	/* Montage Tags */

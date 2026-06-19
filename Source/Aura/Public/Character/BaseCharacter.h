@@ -31,6 +31,11 @@ public:
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 
+	virtual int32 GetMinionCount_Implementation() override;
+
+	// Modify function for Minioncount. Parameter can be either positive or negative.
+	virtual void ModifyMinionCount_Implementation(int32 NewMinionCount) override;
+
 	virtual void Die() override;
 
 	/* To get whether the current actor is alive or not! */
@@ -121,4 +126,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TArray<FTaggedMontage> AttackMontages;
+
+	int32 MinionCount;
 };

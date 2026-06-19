@@ -80,4 +80,10 @@ public:
 	/* Lookup function to get associated FTaggedMontage with given MontageTag */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FTaggedMontage GetTaggedMontageByTag(const FGameplayTag& MontageTag);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	int32 GetMinionCount();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void ModifyMinionCount(int32 NewMinionCount);
 };
