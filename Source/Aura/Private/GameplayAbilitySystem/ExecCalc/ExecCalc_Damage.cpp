@@ -150,7 +150,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		* param[2] => Default value for the tag when the tag is not found. (0)
 		*/
 		// Calculate damage type bonus.
-		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(Pair.Key);
+		float DamageTypeValue = GESpec.GetSetByCallerMagnitude(Pair.Key, false);
 		
 		// Calculate damage resistance value.
 		float Resistance { 0.0f };
