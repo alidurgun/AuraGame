@@ -158,6 +158,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	instance.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Abilities.Summon"),
 	FString("Summon Ability Tag"));
+	
+	instance.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Abilities.Fire.FireBolt"),
+	FString("FireBolt Ability Tag"));
 	/* End Abilities Tags Initialization */
 
 	/* Montage Tags Initialization */
