@@ -38,6 +38,9 @@ void UAuraAbilitySystemComponent::AddCharacterAbilites(const TArray<TSubclassOf<
 			GiveAbility(AbilitySpec);
 		}
 	}
+	// broadcast abilities have been given.
+	bStartupAbilitiesGiven = true;
+	AbilitiesGivenDelegate.Broadcast(this);
 }
 
 void UAuraAbilitySystemComponent::AbilityInputTagPressed(FGameplayTag Tag)

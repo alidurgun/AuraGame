@@ -12,6 +12,12 @@
  */
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnEffectTagAppliedSignature, const FGameplayTagContainer&);
 
+/*
+ * This delegate will be responsible from ability given mechanism. It will be broadcasted whenever
+ * the ability has been given to the character.
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilitiesGiven, UAuraAbilitySystemComponent*);
+
 /**
  * 
  */
@@ -44,4 +50,7 @@ public:
 	void AbilityInputTagHeld(FGameplayTag Tag);
 
 	void AbilityInputTagReleased(FGameplayTag Tag);
+
+	FAbilitiesGiven AbilitiesGivenDelegate;
+	bool bStartupAbilitiesGiven = false; // to check if the broadcast occurs first.
 };

@@ -78,6 +78,7 @@ public:
 	/* Abilities Tags */
 	FGameplayTag Abilities_MeleeAttack;
 	FGameplayTag Abilities_Summon;
+	FGameplayTag Abilities_Fire_FireBolt;
 	/* End Abilities Tags */
 
 	/* Montage Tags */
